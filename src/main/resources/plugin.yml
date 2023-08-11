@@ -1,0 +1,4 @@
+name: xlucashDrop
+version: '${project.version}'
+main: me.xlucash.xlucashdrop.XlucashDrop
+api-version: '1.19'

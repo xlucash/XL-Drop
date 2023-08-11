@@ -1,0 +1,10 @@
+drops:
+  COBBLESTONE:
+    chance: 10.0
+  DIAMOND:
+    chance: 0.1
+world: "world"
+drop_multiplier_per_island_level:
+  levels_interval: 250
+  multiplier_value: 0.01
+stone_exp_drop: 0.1
