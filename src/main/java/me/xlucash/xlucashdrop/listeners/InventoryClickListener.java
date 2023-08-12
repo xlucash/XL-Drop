@@ -1,6 +1,7 @@
 package me.xlucash.xlucashdrop.listeners;
 
 import me.xlucash.xlucashdrop.DropMain;
+import org.bukkit.ChatColor;
 import org.bukkit.Material;
 import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
@@ -31,6 +32,7 @@ public class InventoryClickListener implements Listener {
 
         if (clickedItem != null && clickedItem.getType() != Material.BLACK_STAINED_GLASS_PANE) {
             String itemName = clickedItem.getType().name();
+            String displayName = plugin.getConfig().getString("drops." + itemName + ".displayName");
             boolean currentStatus = plugin.getDatabaseManager().isDropEnabled(player.getUniqueId(), itemName);
             plugin.getDatabaseManager().setDropEnabled(player.getUniqueId(), itemName, !currentStatus);
 
@@ -47,7 +49,7 @@ public class InventoryClickListener implements Listener {
             meta.setLore(lore);
             clickedItem.setItemMeta(meta);
 
-            player.sendMessage("§aZmieniono status dropu dla " + itemName + " na: " + (!currentStatus ? "Włączony" : "Wyłączony"));
+            player.sendMessage("§7Status dropu " + ChatColor.WHITE + displayName + " §7zostal zmieniony na: " + (!currentStatus ? "§aWłączony" : "§cWyłączony"));
         }
 
         refreshGuiForPlayer(player, event.getInventory());

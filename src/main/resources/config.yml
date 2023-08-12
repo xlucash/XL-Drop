@@ -2,20 +2,28 @@
 drops:
   EMERALD:
     chance: 0.8
+    displayName: "Szmaragd"
   DIAMOND:
     chance: 1.0
+    displayName: "Diament"
   IRON_INGOT:
     chance: 2.0
+    displayName: "Zelazo"
   GOLD_INGOT:
     chance: 1.2
+    displayName: "Zloto"
   REDSTONE:
     chance: 1.7
+    displayName: "Redstone"
   LAPIS_LAZULI:
     chance: 1.7
+    displayName: "Lapis"
   COAL:
     chance: 2.5
+    displayName: "Wegiel"
   NETHERITE_INGOT:
     chance: 0.1
+    displayName: "Netherite"
 # World where plugin is enabled
 world: "world"
 # Multiplier for drop chance per island levels
