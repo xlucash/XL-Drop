@@ -7,6 +7,11 @@ import org.bukkit.command.Command;
 import org.bukkit.command.CommandExecutor;
 import org.bukkit.command.CommandSender;
 import org.bukkit.entity.Player;
+import org.bukkit.inventory.ItemStack;
+import org.bukkit.inventory.meta.ItemMeta;
+
+import java.util.ArrayList;
+import java.util.List;
 
 public class DropCommand implements CommandExecutor {
 
@@ -32,10 +37,31 @@ public class DropCommand implements CommandExecutor {
             Bukkit.getServer().getConsoleSender().sendMessage("[xlucashDROP] Plugin zostal przeladowany!");
             plugin.reloadConfig();
         } else {
-            new DropGUI(plugin).open(player);
+            DropGUI dropGui = new DropGUI(plugin);
+            dropGui.open(player);
+            updateGuiForPlayer(player, dropGui);
         }
 
         return true;
+    }
+
+
+    private void updateGuiForPlayer(Player player, DropGUI dropGui) {
+        for (String item : plugin.getConfig().getConfigurationSection("drops").getKeys(false)) {
+            ItemStack guiItem = dropGui.getInventory().getItem(plugin.getConfig().getInt("drops." + item + ".slot"));
+            if (guiItem != null && guiItem.getType().name().equals(item)) {
+                ItemMeta meta = guiItem.getItemMeta();
+                List<String> lore = meta.getLore();
+                if (lore == null) lore = new ArrayList<>();
+                if (lore.size() == 1) {
+                    lore.add(plugin.getDatabaseManager().isDropEnabled(player.getUniqueId(), item) ? "§7Drop: §aWłączony" : "§7Drop: §cWyłączony");
+                } else if (lore.size() > 1) {
+                    lore.set(1, plugin.getDatabaseManager().isDropEnabled(player.getUniqueId(), item) ? "§7Drop: §aWłączony" : "§7Drop: §cWyłączony");
+                }
+                meta.setLore(lore);
+                guiItem.setItemMeta(meta);
+            }
+        }
     }
 
 }

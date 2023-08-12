@@ -36,19 +36,21 @@ public class DropGUI {
     }
 
     public void open(Player player) {
-        populateItems();
+        populateItemsForPlayer(player);
         player.openInventory(inventory);
     }
 
-    private void populateItems() {
+    private void populateItemsForPlayer(Player player) {
         for (String key : plugin.getConfig().getConfigurationSection("drops").getKeys(false)) {
             Material material = Material.valueOf(key.toUpperCase());
             double chance = plugin.getConfig().getDouble("drops." + key + ".chance");
+            boolean isEnabled = plugin.getDatabaseManager().isDropEnabled(player.getUniqueId(), key);
 
             ItemStack item = new ItemStack(material);
             ItemMeta meta = item.getItemMeta();
             List<String> lore = new ArrayList<>();
             lore.add(ChatColor.GRAY + "Szansa: " + ChatColor.WHITE + chance + "%");
+            lore.add(isEnabled ? "§7Drop: §aWłączony" : "§7Drop: §cWyłączony");
             meta.setLore(lore);
             item.setItemMeta(meta);
 
@@ -68,5 +70,9 @@ public class DropGUI {
                 inventory.setItem(i, blackGlassPane);
             }
         }
+    }
+
+    public Inventory getInventory() {
+        return this.inventory;
     }
 }

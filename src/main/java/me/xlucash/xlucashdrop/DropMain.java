@@ -40,4 +40,8 @@ public final class DropMain extends JavaPlugin {
     private void registerCommands() {
         getCommand("drop").setExecutor(new DropCommand(this));
     }
+
+    public DatabaseManager getDatabaseManager() {
+        return databaseManager;
+    }
 }

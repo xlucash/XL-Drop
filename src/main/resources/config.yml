@@ -29,6 +29,6 @@ database:
   type: "MySQL"
   host: "localhost"
   port: 3306
-  name: "minecraft_db"
+  name: "xlucashdrop_db"
   username: "root"
-  password: "password"
+  password: ""
