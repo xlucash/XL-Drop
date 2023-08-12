@@ -44,10 +44,12 @@ public class DropGUI {
         for (String key : plugin.getConfig().getConfigurationSection("drops").getKeys(false)) {
             Material material = Material.valueOf(key.toUpperCase());
             double chance = plugin.getConfig().getDouble("drops." + key + ".chance");
+            String displayName = plugin.getConfig().getString("drops." + key + ".displayName");
             boolean isEnabled = plugin.getDatabaseManager().isDropEnabled(player.getUniqueId(), key);
 
             ItemStack item = new ItemStack(material);
             ItemMeta meta = item.getItemMeta();
+            meta.setDisplayName(ChatColor.WHITE + displayName);
             List<String> lore = new ArrayList<>();
             lore.add(ChatColor.GRAY + "Szansa: " + ChatColor.WHITE + chance + "%");
             lore.add(isEnabled ? "§7Drop: §aWłączony" : "§7Drop: §cWyłączony");
