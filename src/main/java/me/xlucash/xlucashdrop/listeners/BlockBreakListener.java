@@ -21,6 +21,11 @@ public class BlockBreakListener implements Listener {
     @EventHandler
     public void onBlockBreak(BlockBreakEvent event) {
         Player player = event.getPlayer();
+        String allowedWorld = plugin.getConfig().getString("world");
+
+        if (!player.getWorld().getName().equals(allowedWorld)) {
+            return;
+        }
 
         if (event.getBlock().getType() != Material.STONE) {
             return;
@@ -39,6 +44,11 @@ public class BlockBreakListener implements Listener {
 
         for (String item : plugin.getConfig().getConfigurationSection("drops").getKeys(false)) {
             double chance = plugin.getConfig().getDouble("drops." + item + ".chance");
+
+            // Sprawdzanie, czy drop jest włączony dla gracza
+            if (!plugin.getDatabaseManager().isDropEnabled(player.getUniqueId(), item)) {
+                continue;
+            }
 
             if (random.nextDouble() * 100 < chance) {
                 player.getWorld().dropItemNaturally(event.getBlock().getLocation(), new ItemStack(Material.valueOf(item)));
