@@ -1,10 +1,34 @@
+# List of items that can be dropped by breaking stone
 drops:
-  COBBLESTONE:
-    chance: 10.0
+  EMERALD:
+    chance: 0.8
   DIAMOND:
+    chance: 1.0
+  IRON_INGOT:
+    chance: 2.0
+  GOLD_INGOT:
+    chance: 1.2
+  REDSTONE:
+    chance: 1.7
+  LAPIS_LAZULI:
+    chance: 1.7
+  COAL:
+    chance: 2.5
+  NETHERITE_INGOT:
     chance: 0.1
+# World where plugin is enabled
 world: "world"
+# Multiplier for drop chance per island levels
 drop_multiplier_per_island_level:
   levels_interval: 250
   multiplier_value: 0.01
-stone_exp_drop: 0.1
+# Amount of exp dropped by breaking stone
+stone_exp_drop: 1
+# Database connection settings (MySQL)
+database:
+  type: "MySQL"
+  host: "localhost"
+  port: 3306
+  name: "minecraft_db"
+  username: "root"
+  password: "password"

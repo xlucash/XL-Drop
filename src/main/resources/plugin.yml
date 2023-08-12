@@ -1,4 +1,12 @@
 name: xlucashDrop
 version: '${project.version}'
-main: me.xlucash.xlucashdrop.XlucashDrop
+main: me.xlucash.xlucashdrop.DropMain
 api-version: '1.19'
+commands:
+  drop:
+    description: Otwiera GUI lub przeladowuje plugin.
+    usage: /<command> [reload]
+permissions:
+  drop.reload:
+    description: Uprawnienie do przeładowania pluginu.
+    default: op
