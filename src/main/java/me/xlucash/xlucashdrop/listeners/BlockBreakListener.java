@@ -9,6 +9,7 @@ import org.bukkit.event.Listener;
 import org.bukkit.event.block.BlockBreakEvent;
 import org.bukkit.inventory.ItemStack;
 
+import java.util.HashMap;
 import java.util.Random;
 
 public class BlockBreakListener implements Listener {
@@ -35,12 +36,18 @@ public class BlockBreakListener implements Listener {
             return;
         }
 
+        event.setDropItems(false);
+
         Material toolType = player.getInventory().getItemInMainHand().getType();
         if (!toolType.name().endsWith("_PICKAXE")) {
             return;
         }
 
         giveExp(player, plugin.getConfig().getDouble("stone_exp_drop"));
+        if (plugin.getDatabaseManager().isDropEnabled(player.getUniqueId(), "COBBLESTONE")) {
+            ItemStack cobbleItem = new ItemStack(Material.COBBLESTONE);
+            safelyAddToInventory(player, cobbleItem);
+        }
 
         for (String item : plugin.getConfig().getConfigurationSection("drops").getKeys(false)) {
             double chance = plugin.getConfig().getDouble("drops." + item + ".chance");
@@ -50,12 +57,22 @@ public class BlockBreakListener implements Listener {
             }
 
             if (random.nextDouble() * 100 < chance) {
-                player.getWorld().dropItemNaturally(event.getBlock().getLocation(), new ItemStack(Material.valueOf(item)));
+                ItemStack dropItem = new ItemStack(Material.valueOf(item));
+                safelyAddToInventory(player, dropItem);
             }
         }
     }
 
-    private void giveExp(Player player, double expAmount) {
-        player.giveExp((int) expAmount);
+    private void safelyAddToInventory(Player player, ItemStack item) {
+        HashMap<Integer, ItemStack> leftovers = player.getInventory().addItem(item);
+
+        for (ItemStack leftover : leftovers.values()) {
+            player.getWorld().dropItemNaturally(player.getLocation(), leftover);
+        }
+    }
+    private void giveExp(Player player, double baseExpAmount) {
+        int playerLevel = player.getLevel();
+        double adjustedExpAmount = baseExpAmount * (1 + (playerLevel * 0.1));
+        player.giveExp((int) adjustedExpAmount);
     }
 }

@@ -22,7 +22,7 @@ public class DropGUI {
 
     public DropGUI(DropMain plugin) {
         this.plugin = plugin;
-        this.inventory = Bukkit.createInventory(null, 36, "Drop ze stone");
+        this.inventory = Bukkit.createInventory(null, 45, "Drop ze stone");
 
         this.itemSlots = new HashMap<>();
         itemSlots.put("DIAMOND", 10);
@@ -33,6 +33,7 @@ public class DropGUI {
         itemSlots.put("LAPIS_LAZULI", 15);
         itemSlots.put("REDSTONE", 16);
         itemSlots.put("NETHERITE_INGOT", 22);
+        itemSlots.put("COBBLESTONE",33);
     }
 
     public void open(Player player) {
@@ -60,6 +61,8 @@ public class DropGUI {
             if (slot != -1) {
                 inventory.setItem(slot, item);
             }
+
+            prepareCobblestoneSlot(player);
         }
 
         ItemStack blackGlassPane = new ItemStack(Material.BLACK_STAINED_GLASS_PANE);
@@ -72,6 +75,18 @@ public class DropGUI {
                 inventory.setItem(i, blackGlassPane);
             }
         }
+    }
+
+    private void prepareCobblestoneSlot(Player player) {
+        ItemStack cobbleItem = new ItemStack(Material.COBBLESTONE);
+        ItemMeta cobbleMeta = cobbleItem.getItemMeta();
+        List<String> cobbleLore = new ArrayList<>();
+        cobbleLore.add(" ");
+        cobbleLore.add(plugin.getDatabaseManager().isDropEnabled(player.getUniqueId(), "COBBLESTONE") ? "§7Drop: §aWłączony" : "§7Drop: §cWyłączony");
+        cobbleMeta.setLore(cobbleLore);
+        cobbleMeta.setDisplayName(ChatColor.WHITE + "Kamien");
+        cobbleItem.setItemMeta(cobbleMeta);
+        inventory.setItem(itemSlots.get("COBBLESTONE"), cobbleItem);
     }
 
     public Inventory getInventory() {

@@ -36,8 +36,8 @@ public class InventoryClickListener implements Listener {
 
         if (lastClickTime.containsKey(player.getUniqueId())) {
             long timeSinceLastClick = currentTime - lastClickTime.get(player.getUniqueId());
-            if (timeSinceLastClick < 3000) { // 3000 ms = 3 sekundy
-                player.sendMessage("§cMusisz poczekać 3 sekundy przed kolejnym kliknięciem!");
+            if (timeSinceLastClick < 250) { // 250ms
+                player.sendMessage("§cNie klikaj tak szybko!");
                 return;
             }
         }
@@ -64,8 +64,11 @@ public class InventoryClickListener implements Listener {
 
             meta.setLore(lore);
             clickedItem.setItemMeta(meta);
-
-            player.sendMessage("§7Status dropu " + ChatColor.WHITE + displayName + " §7zostal zmieniony na: " + (!currentStatus ? "§aWłączony" : "§cWyłączony"));
+            if ("COBBLESTONE".equals(itemName)) {
+                player.sendMessage("§7Status dropu " + ChatColor.WHITE + "Cobblestone" + " §7zostal zmieniony na: " + (!currentStatus ? "§aWłączony" : "§cWyłączony"));
+            } else {
+                player.sendMessage("§7Status dropu " + ChatColor.WHITE + displayName + " §7zostal zmieniony na: " + (!currentStatus ? "§aWłączony" : "§cWyłączony"));
+            }
         }
 
         refreshGuiForPlayer(player, event.getInventory());
@@ -79,6 +82,7 @@ public class InventoryClickListener implements Listener {
                 updateItemLore(guiItem, isEnabled);
             }
         }
+        updateItemLore(new ItemStack(Material.COBBLESTONE), plugin.getDatabaseManager().isDropEnabled(player.getUniqueId(), "COBBLESTONE"));
     }
 
     private void updateItemLore(ItemStack item, boolean isEnabled) {
