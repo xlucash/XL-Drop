@@ -45,7 +45,6 @@ public class BlockBreakListener implements Listener {
         for (String item : plugin.getConfig().getConfigurationSection("drops").getKeys(false)) {
             double chance = plugin.getConfig().getDouble("drops." + item + ".chance");
 
-            // Sprawdzanie, czy drop jest włączony dla gracza
             if (!plugin.getDatabaseManager().isDropEnabled(player.getUniqueId(), item)) {
                 continue;
             }

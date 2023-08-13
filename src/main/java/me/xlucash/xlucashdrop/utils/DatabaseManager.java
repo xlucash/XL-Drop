@@ -1,8 +1,13 @@
 package me.xlucash.xlucashdrop.utils;
 
 import me.xlucash.xlucashdrop.DropMain;
+import org.bukkit.Bukkit;
+import org.bukkit.Location;
+import org.bukkit.World;
 
 import java.sql.*;
+import java.util.ArrayList;
+import java.util.List;
 import java.util.UUID;
 
 public class DatabaseManager {
@@ -49,6 +54,15 @@ public class DatabaseManager {
                             "is_enabled BOOLEAN DEFAULT TRUE," +
                             "PRIMARY KEY (player_uuid, item_name))"
             );
+            statement.execute(
+                    "CREATE TABLE IF NOT EXISTS stone_generators (" +
+                            "x INT NOT NULL," +
+                            "y INT NOT NULL," +
+                            "z INT NOT NULL," +
+                            "world VARCHAR(255) NOT NULL," +
+                            "owner_uuid VARCHAR(36) NOT NULL," +
+                            "PRIMARY KEY (x, y, z, world))"
+            );
         } catch (SQLException e) {
             e.printStackTrace();
         }
@@ -93,5 +107,66 @@ public class DatabaseManager {
             e.printStackTrace();
         }
         return true;
+    }
+
+    public void addGenerator(Location location, UUID ownerUUID) {
+        try (PreparedStatement statement = connection.prepareStatement(
+                "INSERT INTO stone_generators (x, y, z, world, owner_uuid) VALUES (?, ?, ?, ?, ?)")) {
+            prepareSQLStatement(location, statement);
+            statement.setString(5, ownerUUID.toString());
+            statement.executeUpdate();
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
+    }
+
+    public void removeGenerator(Location location) {
+        try (PreparedStatement statement = connection.prepareStatement(
+                "DELETE FROM stone_generators WHERE x = ? AND y = ? AND z = ? AND world = ?")) {
+            prepareSQLStatement(location, statement);
+            statement.executeUpdate();
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
+    }
+
+    public boolean isGenerator(Location location) {
+        try (PreparedStatement statement = connection.prepareStatement(
+                "SELECT * FROM stone_generators WHERE x = ? AND y = ? AND z = ? AND world = ?")) {
+            prepareSQLStatement(location, statement);
+            ResultSet resultSet = statement.executeQuery();
+            return resultSet.next();
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
+        return false;
+    }
+
+    private static void prepareSQLStatement(Location location, PreparedStatement statement) throws SQLException {
+        statement.setInt(1, location.getBlockX());
+        statement.setInt(2, location.getBlockY());
+        statement.setInt(3, location.getBlockZ());
+        statement.setString(4, location.getWorld().getName());
+    }
+
+    public List<Location> getAllGeneratorLocations() {
+        List<Location> locations = new ArrayList<>();
+
+        try (PreparedStatement statement = connection.prepareStatement(
+                "SELECT world, x, y, z FROM stone_generators")) {
+            ResultSet resultSet = statement.executeQuery();
+            while (resultSet.next()) {
+                String worldName = resultSet.getString("world");
+                World world = Bukkit.getWorld(worldName);
+                double x = resultSet.getDouble("x");
+                double y = resultSet.getDouble("y");
+                double z = resultSet.getDouble("z");
+                locations.add(new Location(world, x, y, z));
+            }
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
+
+        return locations;
     }
 }

@@ -1,4 +1,4 @@
-package me.xlucash.xlucashdrop.utils;
+package me.xlucash.xlucashdrop.guis;
 
 import me.xlucash.xlucashdrop.DropMain;
 import org.bukkit.Bukkit;
