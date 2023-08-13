@@ -1,7 +1,7 @@
 package me.xlucash.xlucashdrop.commands;
 
 import me.xlucash.xlucashdrop.DropMain;
-import me.xlucash.xlucashdrop.utils.DropGUI;
+import me.xlucash.xlucashdrop.guis.DropGUI;
 import org.bukkit.Bukkit;
 import org.bukkit.command.Command;
 import org.bukkit.command.CommandExecutor;
