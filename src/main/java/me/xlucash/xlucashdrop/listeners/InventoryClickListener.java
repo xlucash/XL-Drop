@@ -11,11 +11,11 @@ import org.bukkit.inventory.Inventory;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.inventory.meta.ItemMeta;
 
-import java.util.ArrayList;
-import java.util.List;
+import java.util.*;
 
 public class InventoryClickListener implements Listener {
     private final DropMain plugin;
+    private final Map<UUID, Long> lastClickTime = new HashMap<>();
 
     public InventoryClickListener(DropMain plugin) {
         this.plugin = plugin;
@@ -27,7 +27,23 @@ public class InventoryClickListener implements Listener {
         }
         event.setCancelled(true);
 
+        if (event.getClickedInventory() != event.getView().getTopInventory()) {
+            return;
+        }
+
         Player player = (Player) event.getWhoClicked();
+        long currentTime = System.currentTimeMillis();
+
+        if (lastClickTime.containsKey(player.getUniqueId())) {
+            long timeSinceLastClick = currentTime - lastClickTime.get(player.getUniqueId());
+            if (timeSinceLastClick < 3000) { // 3000 ms = 3 sekundy
+                player.sendMessage("§cMusisz poczekać 3 sekundy przed kolejnym kliknięciem!");
+                return;
+            }
+        }
+
+        lastClickTime.put(player.getUniqueId(), currentTime);
+
         ItemStack clickedItem = event.getCurrentItem();
 
         if (clickedItem != null && clickedItem.getType() != Material.BLACK_STAINED_GLASS_PANE) {
