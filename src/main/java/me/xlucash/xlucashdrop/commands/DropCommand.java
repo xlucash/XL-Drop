@@ -2,6 +2,7 @@ package me.xlucash.xlucashdrop.commands;
 
 import me.xlucash.xlucashdrop.DropMain;
 import me.xlucash.xlucashdrop.guis.DropGUI;
+import me.xlucash.xlucashdrop.utils.ConfigManager;
 import org.bukkit.Bukkit;
 import org.bukkit.command.Command;
 import org.bukkit.command.CommandExecutor;
@@ -14,10 +15,11 @@ import java.util.ArrayList;
 import java.util.List;
 
 public class DropCommand implements CommandExecutor {
-
     private final DropMain plugin;
-    public DropCommand(DropMain plugin) {
+    private final ConfigManager configManager;
+    public DropCommand(DropMain plugin, ConfigManager configManager) {
         this.plugin = plugin;
+        this.configManager = configManager;
     }
 
     @Override
@@ -35,7 +37,7 @@ public class DropCommand implements CommandExecutor {
             }
             player.sendMessage("Plugin zostal przeladowany!");
             Bukkit.getServer().getConsoleSender().sendMessage("[xlucashDROP] Plugin zostal przeladowany!");
-            plugin.reloadConfig();
+            configManager.reloadConfig();
         } else {
             DropGUI dropGui = new DropGUI(plugin);
             dropGui.open(player);

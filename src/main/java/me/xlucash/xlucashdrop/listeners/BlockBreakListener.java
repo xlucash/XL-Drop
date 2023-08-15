@@ -49,6 +49,8 @@ public class BlockBreakListener implements Listener {
             safelyAddToInventory(player, cobbleItem);
         }
 
+        int fortuneLevel = getFortuneLevel(player.getInventory().getItemInMainHand());
+
         for (String item : plugin.getConfig().getConfigurationSection("drops").getKeys(false)) {
             double chance = plugin.getConfig().getDouble("drops." + item + ".chance");
 
@@ -57,7 +59,8 @@ public class BlockBreakListener implements Listener {
             }
 
             if (random.nextDouble() * 100 < chance) {
-                ItemStack dropItem = new ItemStack(Material.valueOf(item));
+                int amountToDrop = getDropAmountWithFortune(fortuneLevel);
+                ItemStack dropItem = new ItemStack(Material.valueOf(item), amountToDrop);
                 safelyAddToInventory(player, dropItem);
             }
         }
@@ -74,5 +77,34 @@ public class BlockBreakListener implements Listener {
         int playerLevel = player.getLevel();
         double adjustedExpAmount = baseExpAmount * (1 + (playerLevel * 0.1));
         player.giveExp((int) adjustedExpAmount);
+    }
+
+    private int getFortuneLevel(ItemStack item) {
+        if (item == null || !item.hasItemMeta() || !item.getItemMeta().hasEnchant(org.bukkit.enchantments.Enchantment.LOOT_BONUS_BLOCKS)) {
+            return 0;
+        }
+        return item.getItemMeta().getEnchantLevel(org.bukkit.enchantments.Enchantment.LOOT_BONUS_BLOCKS);
+    }
+
+    private int getDropAmountWithFortune(int fortuneLevel) {
+        int baseAmount = 1;
+        if (fortuneLevel == 0) return baseAmount;
+
+        double roll = random.nextDouble();
+        switch (fortuneLevel) {
+            case 1:
+                if (roll < 0.2) return baseAmount + 1; // 20% for 1 additional item
+                break;
+            case 2:
+                if (roll < 0.15) return baseAmount + 2; // 15% for 2 additional items
+                else if (roll < 0.3) return baseAmount + 1; // 15% for 1 additional item
+                break;
+            case 3:
+                if (roll < 0.1) return baseAmount + 3; // 10% for 3 additional items
+                else if (roll < 0.25) return baseAmount + 2; // 15% for 2 additional items
+                else if (roll < 0.4) return baseAmount + 1; // 15% for 1 additional item
+                break;
+        }
+        return baseAmount;
     }
 }
