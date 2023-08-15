@@ -41,7 +41,7 @@ public class DatabaseManager {
 
             createTableIfNotExists();
         } catch (SQLException e) {
-            e.printStackTrace();
+            handleDatabaseError(e);
         }
     }
 
@@ -64,7 +64,7 @@ public class DatabaseManager {
                             "PRIMARY KEY (x, y, z, world))"
             );
         } catch (SQLException e) {
-            e.printStackTrace();
+            handleDatabaseError(e);
         }
     }
 
@@ -74,7 +74,7 @@ public class DatabaseManager {
                 connection.close();
             }
         } catch (SQLException e) {
-            e.printStackTrace();
+            handleDatabaseError(e);
         }
     }
 
@@ -90,7 +90,7 @@ public class DatabaseManager {
             statement.setBoolean(3, isEnabled);
             statement.executeUpdate();
         } catch (SQLException e) {
-            e.printStackTrace();
+            handleDatabaseError(e);
         }
     }
 
@@ -104,7 +104,7 @@ public class DatabaseManager {
                 return resultSet.getBoolean("is_enabled");
             }
         } catch (SQLException e) {
-            e.printStackTrace();
+            handleDatabaseError(e);
         }
         return true;
     }
@@ -116,7 +116,7 @@ public class DatabaseManager {
             statement.setString(5, ownerUUID.toString());
             statement.executeUpdate();
         } catch (SQLException e) {
-            e.printStackTrace();
+            handleDatabaseError(e);
         }
     }
 
@@ -126,7 +126,7 @@ public class DatabaseManager {
             prepareSQLStatement(location, statement);
             statement.executeUpdate();
         } catch (SQLException e) {
-            e.printStackTrace();
+            handleDatabaseError(e);
         }
     }
 
@@ -137,7 +137,7 @@ public class DatabaseManager {
             ResultSet resultSet = statement.executeQuery();
             return resultSet.next();
         } catch (SQLException e) {
-            e.printStackTrace();
+            handleDatabaseError(e);
         }
         return false;
     }
@@ -164,9 +164,14 @@ public class DatabaseManager {
                 locations.add(new Location(world, x, y, z));
             }
         } catch (SQLException e) {
-            e.printStackTrace();
+            handleDatabaseError(e);
         }
 
         return locations;
+    }
+
+    private void handleDatabaseError(Exception e) {
+        plugin.getLogger().severe("Wystąpił błąd podczas łączenia z bazą danych! Sprawdź konfigurację pluginu!");
+        plugin.getServer().getPluginManager().disablePlugin(plugin);
     }
 }

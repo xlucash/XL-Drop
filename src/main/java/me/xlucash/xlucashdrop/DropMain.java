@@ -35,6 +35,7 @@ public final class DropMain extends JavaPlugin {
 
     @Override
     public void onDisable() {
+        databaseManager.disconnect();
         getServer().getConsoleSender().sendMessage(Message.PLUGIN_DISABLED.getText());
     }
 
