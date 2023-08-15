@@ -1,6 +1,7 @@
 package me.xlucash.xlucashdrop.utils;
 
 import me.xlucash.xlucashdrop.DropMain;
+import me.xlucash.xlucashdrop.enums.Message;
 import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
 import org.bukkit.Material;
@@ -34,7 +35,7 @@ public class RecipeManager {
     public static ItemStack getGeneratorItem() {
         ItemStack generator = new ItemStack(Material.END_STONE);
         ItemMeta meta = generator.getItemMeta();
-        meta.setDisplayName(DropMain.GENERATOR_NAME);
+        meta.setDisplayName(Message.GENERATOR_NAME.getText());
 
         List<String> lore = new ArrayList<>();
         lore.add(ChatColor.GRAY + "Po postawieniu w jego miejscu pojawi się kamień,");

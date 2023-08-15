@@ -1,6 +1,7 @@
 package me.xlucash.xlucashdrop.listeners;
 
 import me.xlucash.xlucashdrop.DropMain;
+import me.xlucash.xlucashdrop.enums.Message;
 import org.bukkit.ChatColor;
 import org.bukkit.Material;
 import org.bukkit.entity.Player;
@@ -22,7 +23,7 @@ public class InventoryClickListener implements Listener {
     }
     @EventHandler
     public void onInventoryClick(InventoryClickEvent event) {
-        if(!event.getView().getTitle().equals("Drop ze stone")) {
+        if(!event.getView().getTitle().equals(Message.GUI_TITLE.getText())) {
             return;
         }
         event.setCancelled(true);
@@ -37,7 +38,7 @@ public class InventoryClickListener implements Listener {
         if (lastClickTime.containsKey(player.getUniqueId())) {
             long timeSinceLastClick = currentTime - lastClickTime.get(player.getUniqueId());
             if (timeSinceLastClick < 250) { // 250ms
-                player.sendMessage("§cNie klikaj tak szybko!");
+                player.sendMessage(Message.FAST_CLICK.getText());
                 return;
             }
         }
@@ -57,18 +58,17 @@ public class InventoryClickListener implements Listener {
             if (lore == null) lore = new ArrayList<>();
 
             if (lore.size() == 1) {
-                lore.add(!currentStatus ? "§7Drop: §aWłączony" : "§7Drop: §cWyłączony");
+                lore.add(!currentStatus ? Message.DROP_ENABLED.getText() : Message.DROP_DISABLED.getText());
             } else if (lore.size() > 1) {
-                lore.set(1, !currentStatus ? "§7Drop: §aWłączony" : "§7Drop: §cWyłączony");
+                lore.set(1, !currentStatus ? Message.DROP_ENABLED.getText() : Message.DROP_DISABLED.getText());
             }
 
             meta.setLore(lore);
             clickedItem.setItemMeta(meta);
-            if ("COBBLESTONE".equals(itemName)) {
-                player.sendMessage("§7Status dropu " + ChatColor.WHITE + "Cobblestone" + " §7zostal zmieniony na: " + (!currentStatus ? "§aWłączony" : "§cWyłączony"));
-            } else {
-                player.sendMessage("§7Status dropu " + ChatColor.WHITE + displayName + " §7zostal zmieniony na: " + (!currentStatus ? "§aWłączony" : "§cWyłączony"));
-            }
+            String statusMessage = String.format(Message.DROP_STATUS_CHANGED.getText(),
+                    ChatColor.WHITE + (itemName.equals("COBBLESTONE") ? "Cobblestone" : displayName),
+                    !currentStatus ? Message.STATUS_ENABLED.getText() : Message.STATUS_DISABLED.getText());
+            player.sendMessage(statusMessage);
         }
 
         refreshGuiForPlayer(player, event.getInventory());
@@ -89,7 +89,7 @@ public class InventoryClickListener implements Listener {
         ItemMeta meta = item.getItemMeta();
         List<String> lore = meta.getLore();
         if (lore != null && lore.size() > 1) {
-            lore.set(1, isEnabled ? "§7Drop: §aWłączony" : "§7Drop: §cWyłączony");
+            lore.set(1, isEnabled ? Message.DROP_ENABLED.getText() : Message.DROP_DISABLED.getText());
             meta.setLore(lore);
             item.setItemMeta(meta);
         }

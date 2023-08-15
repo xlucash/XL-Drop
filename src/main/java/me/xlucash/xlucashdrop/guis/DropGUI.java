@@ -1,6 +1,7 @@
 package me.xlucash.xlucashdrop.guis;
 
 import me.xlucash.xlucashdrop.DropMain;
+import me.xlucash.xlucashdrop.enums.Message;
 import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
 import org.bukkit.Material;
@@ -22,7 +23,7 @@ public class DropGUI {
 
     public DropGUI(DropMain plugin) {
         this.plugin = plugin;
-        this.inventory = Bukkit.createInventory(null, 45, "Drop ze stone");
+        this.inventory = Bukkit.createInventory(null, 45, Message.GUI_TITLE.getText());
 
         this.itemSlots = new HashMap<>();
         itemSlots.put("DIAMOND", 10);
@@ -52,8 +53,8 @@ public class DropGUI {
             ItemMeta meta = item.getItemMeta();
             meta.setDisplayName(ChatColor.WHITE + displayName);
             List<String> lore = new ArrayList<>();
-            lore.add(ChatColor.GRAY + "Szansa: " + ChatColor.WHITE + chance + "%");
-            lore.add(isEnabled ? "§7Drop: §aWłączony" : "§7Drop: §cWyłączony");
+            lore.add(String.format(ChatColor.GRAY + Message.CHANCE_LORE.getText(), ChatColor.GOLD + String.valueOf(chance)));
+            lore.add(isEnabled ? Message.DROP_ENABLED.getText() : Message.DROP_DISABLED.getText());
             meta.setLore(lore);
             item.setItemMeta(meta);
 
@@ -67,7 +68,7 @@ public class DropGUI {
 
         ItemStack blackGlassPane = new ItemStack(Material.BLACK_STAINED_GLASS_PANE);
         ItemMeta meta = blackGlassPane.getItemMeta();
-        meta.setDisplayName(" ");
+        meta.setDisplayName(Message.EMPTY_SLOT_NAME.getText());
         blackGlassPane.setItemMeta(meta);
 
         for (int i = 0; i < inventory.getSize(); i++) {
@@ -81,7 +82,7 @@ public class DropGUI {
         ItemStack cobbleItem = new ItemStack(Material.COBBLESTONE);
         ItemMeta cobbleMeta = cobbleItem.getItemMeta();
         List<String> cobbleLore = new ArrayList<>();
-        cobbleLore.add(" ");
+        cobbleLore.add(Message.EMPTY_SLOT_NAME.getText());
         cobbleLore.add(plugin.getDatabaseManager().isDropEnabled(player.getUniqueId(), "COBBLESTONE") ? "§7Drop: §aWłączony" : "§7Drop: §cWyłączony");
         cobbleMeta.setLore(cobbleLore);
         cobbleMeta.setDisplayName(ChatColor.WHITE + "Kamien");

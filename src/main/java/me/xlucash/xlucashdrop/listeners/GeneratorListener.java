@@ -1,9 +1,9 @@
 package me.xlucash.xlucashdrop.listeners;
 
 import me.xlucash.xlucashdrop.DropMain;
+import me.xlucash.xlucashdrop.enums.Message;
 import me.xlucash.xlucashdrop.utils.RecipeManager;
 import org.bukkit.Bukkit;
-import org.bukkit.ChatColor;
 import org.bukkit.Location;
 import org.bukkit.Material;
 import org.bukkit.entity.Player;
@@ -26,7 +26,6 @@ public class GeneratorListener implements Listener {
 
     @EventHandler
     public void onServerStart(ServerLoadEvent event) {
-        // Pobierz wszystkie generatory z bazy danych
         List<Location> generatorLocations = plugin.getDatabaseManager().getAllGeneratorLocations();
 
         for (Location location : generatorLocations) {
@@ -47,7 +46,7 @@ public class GeneratorListener implements Listener {
             plugin.getDatabaseManager().addGenerator(event.getBlock().getLocation(), event.getPlayer().getUniqueId());
 
             event.getBlock().setType(Material.STONE);
-            event.getPlayer().sendMessage(ChatColor.GREEN + "Pomyslnie postawiono generator stone!");
+            event.getPlayer().sendMessage(Message.GENERATOR_PLACED.getText());
 
             generateStoneTask(event);
         }
@@ -61,7 +60,7 @@ public class GeneratorListener implements Listener {
                     && player.getInventory().getItemInMainHand().getType() == Material.GOLDEN_PICKAXE) {
                 plugin.getDatabaseManager().removeGenerator(event.getBlock().getLocation());
                 player.getInventory().addItem(RecipeManager.getGeneratorItem());
-                player.sendMessage(ChatColor.GREEN + "Pomyslnie zniszczono generator stone!");
+                player.sendMessage(Message.GENERATOR_DESTROYED.getText());
             } else if (event.getBlock().getType() == Material.STONE) {
                 generateStoneTask(event);
             }
@@ -83,13 +82,13 @@ public class GeneratorListener implements Listener {
     @EventHandler
     public void onBlockCanBuild(BlockCanBuildEvent event) {
         if (plugin.getDatabaseManager().isGenerator(event.getBlock().getLocation())) {
-            event.getPlayer().sendMessage("§cNie mozesz stawiac blokow w miejscu generatora!");
+            event.getPlayer().sendMessage(Message.GENERATOR_CANNOT_BUILD.getText());
             event.setBuildable(false);
         }
     }
 
     private boolean isGenerator(ItemStack item) {
         return item != null && item.getType() == Material.END_STONE && item.hasItemMeta()
-                && DropMain.GENERATOR_NAME.equals(item.getItemMeta().getDisplayName());
+                && Message.GENERATOR_NAME.getText().equals(item.getItemMeta().getDisplayName());
     }
 }
