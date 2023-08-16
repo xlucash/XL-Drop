@@ -21,7 +21,7 @@ public class SuperiorSkyblockHook {
         if (SuperiorSkyblockHook.hasIsland(player)) {
             double levelsInterval = plugin.getConfig().getInt("drop_multiplier_per_island_level.levels_interval");
             double multiplierValue = plugin.getConfig().getDouble("drop_multiplier_per_island_level.multiplier_value");
-            return ((Double) SuperiorSkyblockHook.getIslandLevel(player) / levelsInterval) * multiplierValue;
+            return ((SuperiorSkyblockHook.getIslandLevel(player)).doubleValue() / levelsInterval) * multiplierValue;
         }
         return 0;
     }

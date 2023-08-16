@@ -15,10 +15,13 @@ import org.bukkit.event.block.BlockPlaceEvent;
 import org.bukkit.event.server.ServerLoadEvent;
 import org.bukkit.inventory.ItemStack;
 
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 public class GeneratorListener implements Listener {
     private final DropMain plugin;
+    private Map<Location, Integer> generatorTasks = new HashMap<>();
 
     public GeneratorListener(DropMain plugin) {
         this.plugin = plugin;
@@ -48,7 +51,7 @@ public class GeneratorListener implements Listener {
             event.getBlock().setType(Material.STONE);
             event.getPlayer().sendMessage(Message.GENERATOR_PLACED.getText());
 
-            generateStoneTask(event);
+            generateStoneTask(event.getBlock().getLocation());
         }
     }
 
@@ -61,22 +64,23 @@ public class GeneratorListener implements Listener {
                 plugin.getDatabaseManager().removeGenerator(event.getBlock().getLocation());
                 player.getInventory().addItem(RecipeManager.getGeneratorItem());
                 player.sendMessage(Message.GENERATOR_DESTROYED.getText());
+                if (generatorTasks.containsKey(event.getBlock().getLocation())) {
+                    Bukkit.getScheduler().cancelTask(generatorTasks.get(event.getBlock().getLocation()));
+                    generatorTasks.remove(event.getBlock().getLocation());
+                }
             } else if (event.getBlock().getType() == Material.STONE) {
-                generateStoneTask(event);
+                generateStoneTask(event.getBlock().getLocation());
             }
         }
     }
 
-    private void generateStoneTask(BlockBreakEvent event) {
-        Bukkit.getScheduler().runTaskLater(plugin, () -> {
-            event.getBlock().setType(Material.STONE);
-        }, 40L);
-    }
+    private void generateStoneTask(Location location) {
+        int taskId = Bukkit.getScheduler().runTaskLater(plugin, () -> {
+            location.getBlock().setType(Material.STONE);
+            generatorTasks.remove(location);
+        }, 40L).getTaskId();
 
-    private void generateStoneTask(BlockPlaceEvent event) {
-        Bukkit.getScheduler().runTaskLater(plugin, () -> {
-            event.getBlock().setType(Material.STONE);
-        }, 40L);
+        generatorTasks.put(location, taskId);
     }
 
     @EventHandler

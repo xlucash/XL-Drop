@@ -85,7 +85,7 @@ public class DropGUI {
         ItemMeta cobbleMeta = cobbleItem.getItemMeta();
         List<String> cobbleLore = new ArrayList<>();
         cobbleLore.add(Message.EMPTY_SLOT_NAME.getText());
-        cobbleLore.add(plugin.getDatabaseManager().isDropEnabled(player.getUniqueId(), "COBBLESTONE") ? "§7Drop: §aWłączony" : "§7Drop: §cWyłączony");
+        cobbleLore.add(plugin.getDatabaseManager().isDropEnabled(player.getUniqueId(), "COBBLESTONE") ? Message.DROP_ENABLED.getText() : Message.DROP_DISABLED.getText());
         cobbleMeta.setLore(cobbleLore);
         cobbleMeta.setDisplayName(ChatColor.WHITE + "Kamien");
         cobbleItem.setItemMeta(cobbleMeta);
