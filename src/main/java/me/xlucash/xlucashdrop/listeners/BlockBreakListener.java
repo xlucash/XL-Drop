@@ -1,6 +1,7 @@
 package me.xlucash.xlucashdrop.listeners;
 
 import me.xlucash.xlucashdrop.DropMain;
+import me.xlucash.xlucashdrop.hooks.SuperiorSkyblockHook;
 import org.bukkit.GameMode;
 import org.bukkit.Material;
 import org.bukkit.entity.Player;
@@ -53,6 +54,7 @@ public class BlockBreakListener implements Listener {
 
         for (String item : plugin.getConfig().getConfigurationSection("drops").getKeys(false)) {
             double chance = plugin.getConfig().getDouble("drops." + item + ".chance");
+            chance += SuperiorSkyblockHook.getDropChanceMultiplier(player);
 
             if (!plugin.getDatabaseManager().isDropEnabled(player.getUniqueId(), item)) {
                 continue;

@@ -2,6 +2,7 @@ package me.xlucash.xlucashdrop.guis;
 
 import me.xlucash.xlucashdrop.DropMain;
 import me.xlucash.xlucashdrop.enums.Message;
+import me.xlucash.xlucashdrop.hooks.SuperiorSkyblockHook;
 import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
 import org.bukkit.Material;
@@ -46,6 +47,7 @@ public class DropGUI {
         for (String key : plugin.getConfig().getConfigurationSection("drops").getKeys(false)) {
             Material material = Material.valueOf(key.toUpperCase());
             double chance = plugin.getConfig().getDouble("drops." + key + ".chance");
+            chance += SuperiorSkyblockHook.getDropChanceMultiplier(player);
             String displayName = plugin.getConfig().getString("drops." + key + ".displayName");
             boolean isEnabled = plugin.getDatabaseManager().isDropEnabled(player.getUniqueId(), key);
 

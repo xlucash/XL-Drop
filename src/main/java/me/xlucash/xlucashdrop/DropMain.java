@@ -9,6 +9,7 @@ import me.xlucash.xlucashdrop.listeners.InventoryClickListener;
 import me.xlucash.xlucashdrop.utils.ConfigManager;
 import me.xlucash.xlucashdrop.utils.DatabaseManager;
 import me.xlucash.xlucashdrop.utils.RecipeManager;
+import org.bukkit.Bukkit;
 import org.bukkit.plugin.java.JavaPlugin;
 
 public final class DropMain extends JavaPlugin {
@@ -31,6 +32,8 @@ public final class DropMain extends JavaPlugin {
         registerEvents();
 
         getServer().getConsoleSender().sendMessage(Message.PLUGIN_ENABLED.getText());
+
+        loadHooks();
     }
 
     @Override
@@ -52,5 +55,13 @@ public final class DropMain extends JavaPlugin {
 
     public DatabaseManager getDatabaseManager() {
         return databaseManager;
+    }
+
+    private void loadHooks() {
+        if (Bukkit.getPluginManager().getPlugin("SuperiorSkyblock2") != null) {
+            Bukkit.getConsoleSender().sendMessage("[xlucashDrop] Hooked into SuperiorSkyblock2 successfully!");
+        } else {
+            Bukkit.getConsoleSender().sendMessage("[xlucashDrop] SuperiorSkyblock2 not found! Some features might not work.");
+        }
     }
 }
