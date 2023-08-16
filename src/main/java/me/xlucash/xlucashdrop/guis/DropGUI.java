@@ -1,6 +1,8 @@
 package me.xlucash.xlucashdrop.guis;
 
 import me.xlucash.xlucashdrop.DropMain;
+import me.xlucash.xlucashdrop.enums.Message;
+import me.xlucash.xlucashdrop.hooks.SuperiorSkyblockHook;
 import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
 import org.bukkit.Material;
@@ -22,7 +24,7 @@ public class DropGUI {
 
     public DropGUI(DropMain plugin) {
         this.plugin = plugin;
-        this.inventory = Bukkit.createInventory(null, 36, "Drop ze stone");
+        this.inventory = Bukkit.createInventory(null, 45, Message.GUI_TITLE.getText());
 
         this.itemSlots = new HashMap<>();
         itemSlots.put("DIAMOND", 10);
@@ -33,6 +35,7 @@ public class DropGUI {
         itemSlots.put("LAPIS_LAZULI", 15);
         itemSlots.put("REDSTONE", 16);
         itemSlots.put("NETHERITE_INGOT", 22);
+        itemSlots.put("COBBLESTONE",33);
     }
 
     public void open(Player player) {
@@ -44,6 +47,7 @@ public class DropGUI {
         for (String key : plugin.getConfig().getConfigurationSection("drops").getKeys(false)) {
             Material material = Material.valueOf(key.toUpperCase());
             double chance = plugin.getConfig().getDouble("drops." + key + ".chance");
+            chance += SuperiorSkyblockHook.getDropChanceMultiplier(player);
             String displayName = plugin.getConfig().getString("drops." + key + ".displayName");
             boolean isEnabled = plugin.getDatabaseManager().isDropEnabled(player.getUniqueId(), key);
 
@@ -51,8 +55,8 @@ public class DropGUI {
             ItemMeta meta = item.getItemMeta();
             meta.setDisplayName(ChatColor.WHITE + displayName);
             List<String> lore = new ArrayList<>();
-            lore.add(ChatColor.GRAY + "Szansa: " + ChatColor.WHITE + chance + "%");
-            lore.add(isEnabled ? "§7Drop: §aWłączony" : "§7Drop: §cWyłączony");
+            lore.add(String.format(ChatColor.GRAY + Message.CHANCE_LORE.getText(), ChatColor.GOLD + String.valueOf(chance)));
+            lore.add(isEnabled ? Message.DROP_ENABLED.getText() : Message.DROP_DISABLED.getText());
             meta.setLore(lore);
             item.setItemMeta(meta);
 
@@ -60,11 +64,13 @@ public class DropGUI {
             if (slot != -1) {
                 inventory.setItem(slot, item);
             }
+
+            prepareCobblestoneSlot(player);
         }
 
         ItemStack blackGlassPane = new ItemStack(Material.BLACK_STAINED_GLASS_PANE);
         ItemMeta meta = blackGlassPane.getItemMeta();
-        meta.setDisplayName(" ");
+        meta.setDisplayName(Message.EMPTY_SLOT_NAME.getText());
         blackGlassPane.setItemMeta(meta);
 
         for (int i = 0; i < inventory.getSize(); i++) {
@@ -72,6 +78,18 @@ public class DropGUI {
                 inventory.setItem(i, blackGlassPane);
             }
         }
+    }
+
+    private void prepareCobblestoneSlot(Player player) {
+        ItemStack cobbleItem = new ItemStack(Material.COBBLESTONE);
+        ItemMeta cobbleMeta = cobbleItem.getItemMeta();
+        List<String> cobbleLore = new ArrayList<>();
+        cobbleLore.add(Message.EMPTY_SLOT_NAME.getText());
+        cobbleLore.add(plugin.getDatabaseManager().isDropEnabled(player.getUniqueId(), "COBBLESTONE") ? Message.DROP_ENABLED.getText() : Message.DROP_DISABLED.getText());
+        cobbleMeta.setLore(cobbleLore);
+        cobbleMeta.setDisplayName(ChatColor.WHITE + "Kamien");
+        cobbleItem.setItemMeta(cobbleMeta);
+        inventory.setItem(itemSlots.get("COBBLESTONE"), cobbleItem);
     }
 
     public Inventory getInventory() {
