@@ -1,6 +1,7 @@
 package me.xlucash.xlucashdrop.listeners;
 
 import me.xlucash.xlucashdrop.DropMain;
+import me.xlucash.xlucashdrop.config.DropConfig;
 import me.xlucash.xlucashdrop.hooks.SuperiorSkyblockHook;
 import org.bukkit.GameMode;
 import org.bukkit.Material;
@@ -15,15 +16,19 @@ import java.util.Random;
 
 public class BlockBreakListener implements Listener {
     private final DropMain plugin;
+    private final DropConfig dropConfig;
+    private final SuperiorSkyblockHook superiorSkyblockHook;
     private final Random random = new Random();
-    public BlockBreakListener(DropMain plugin) {
+    public BlockBreakListener(DropMain plugin, DropConfig dropConfig, SuperiorSkyblockHook superiorSkyblockHook) {
         this.plugin = plugin;
+        this.dropConfig = dropConfig;
+        this.superiorSkyblockHook = superiorSkyblockHook;
     }
 
     @EventHandler
     public void onBlockBreak(BlockBreakEvent event) {
         Player player = event.getPlayer();
-        String allowedWorld = plugin.getConfig().getString("world");
+        String allowedWorld = dropConfig.getStringForPath("world");
 
         if (!player.getWorld().getName().equals(allowedWorld)) {
             return;
@@ -44,7 +49,7 @@ public class BlockBreakListener implements Listener {
             return;
         }
 
-        giveExp(player, plugin.getConfig().getDouble("stone_exp_drop"));
+        giveExp(player, dropConfig.getDoubleForPath("stone_exp_drop"));
         if (plugin.getDatabaseManager().isDropEnabled(player.getUniqueId(), "COBBLESTONE")) {
             ItemStack cobbleItem = new ItemStack(Material.COBBLESTONE);
             safelyAddToInventory(player, cobbleItem);
@@ -52,9 +57,9 @@ public class BlockBreakListener implements Listener {
 
         int fortuneLevel = getFortuneLevel(player.getInventory().getItemInMainHand());
 
-        for (String item : plugin.getConfig().getConfigurationSection("drops").getKeys(false)) {
-            double chance = plugin.getConfig().getDouble("drops." + item + ".chance");
-            chance += SuperiorSkyblockHook.getDropChanceMultiplier(player);
+        for (String item : dropConfig.getConfigurationSection("drops")) {
+            double chance = dropConfig.getChanceForItem(item);
+            chance += superiorSkyblockHook.getDropChanceMultiplier(player);
 
             if (!plugin.getDatabaseManager().isDropEnabled(player.getUniqueId(), item)) {
                 continue;

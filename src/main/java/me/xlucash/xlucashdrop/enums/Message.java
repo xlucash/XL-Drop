@@ -19,7 +19,9 @@ public enum Message {
     FAST_CLICK("§cNie klikaj tak szybko!"),
     DROP_STATUS_CHANGED("§7Status dropu %s §7został zmieniony na: %s"),
     STATUS_ENABLED("§aWłączony"),
-    STATUS_DISABLED("§cWyłączony");
+    STATUS_DISABLED("§cWyłączony"),
+    SUPERIORSKYBLOCK_HOOKED("Hook z SuperiorSkyblock zostal zaladowany!"),
+    SUPERIORSKYBLOCK_HOOK_FAILED("Hook z SuperiorSkyblock nie zostal zaladowany!");
 
     private final String message;
 

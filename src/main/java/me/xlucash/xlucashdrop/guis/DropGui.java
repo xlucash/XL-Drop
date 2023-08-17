@@ -1,8 +1,10 @@
 package me.xlucash.xlucashdrop.guis;
 
 import me.xlucash.xlucashdrop.DropMain;
+import me.xlucash.xlucashdrop.config.DropConfig;
 import me.xlucash.xlucashdrop.enums.Message;
-import me.xlucash.xlucashdrop.hooks.SuperiorSkyblockHook;
+import me.xlucash.xlucashdrop.guis.items.DropItemProvider;
+import me.xlucash.xlucashdrop.guis.slots.DropSlotManager;
 import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
 import org.bukkit.Material;
@@ -12,30 +14,22 @@ import org.bukkit.inventory.ItemStack;
 import org.bukkit.inventory.meta.ItemMeta;
 
 import java.util.ArrayList;
-import java.util.HashMap;
 import java.util.List;
-import java.util.Map;
 
-public class DropGUI {
+public class DropGui {
 
     private final DropMain plugin;
     private final Inventory inventory;
-    private final Map<String, Integer> itemSlots;
+    private final DropItemProvider itemFactory;
+    private final DropSlotManager slotManager;
+    private final DropConfig dropConfig;
 
-    public DropGUI(DropMain plugin) {
+    public DropGui(DropMain plugin, DropItemProvider itemFactory, DropSlotManager slotManager, DropConfig dropConfig) {
         this.plugin = plugin;
+        this.itemFactory = itemFactory;
+        this.slotManager = slotManager;
+        this.dropConfig = dropConfig;
         this.inventory = Bukkit.createInventory(null, 45, Message.GUI_TITLE.getText());
-
-        this.itemSlots = new HashMap<>();
-        itemSlots.put("DIAMOND", 10);
-        itemSlots.put("EMERALD", 11);
-        itemSlots.put("GOLD_INGOT", 12);
-        itemSlots.put("IRON_INGOT", 13);
-        itemSlots.put("COAL", 14);
-        itemSlots.put("LAPIS_LAZULI", 15);
-        itemSlots.put("REDSTONE", 16);
-        itemSlots.put("NETHERITE_INGOT", 22);
-        itemSlots.put("COBBLESTONE",33);
     }
 
     public void open(Player player) {
@@ -44,30 +38,18 @@ public class DropGUI {
     }
 
     private void populateItemsForPlayer(Player player) {
-        for (String key : plugin.getConfig().getConfigurationSection("drops").getKeys(false)) {
-            Material material = Material.valueOf(key.toUpperCase());
-            double chance = plugin.getConfig().getDouble("drops." + key + ".chance");
-            chance += SuperiorSkyblockHook.getDropChanceMultiplier(player);
-            String displayName = plugin.getConfig().getString("drops." + key + ".displayName");
-            boolean isEnabled = plugin.getDatabaseManager().isDropEnabled(player.getUniqueId(), key);
-
-            ItemStack item = new ItemStack(material);
-            ItemMeta meta = item.getItemMeta();
-            meta.setDisplayName(ChatColor.WHITE + displayName);
-            List<String> lore = new ArrayList<>();
-            lore.add(String.format(ChatColor.GRAY + Message.CHANCE_LORE.getText(), ChatColor.GOLD + String.valueOf(chance)));
-            lore.add(isEnabled ? Message.DROP_ENABLED.getText() : Message.DROP_DISABLED.getText());
-            meta.setLore(lore);
-            item.setItemMeta(meta);
-
-            int slot = itemSlots.getOrDefault(key.toUpperCase(), -1);
+        for (String key : dropConfig.getConfigurationSection("drops")) {
+            ItemStack item = itemFactory.createDropItem(key, player);
+            int slot = slotManager.getSlotForItem(key);
             if (slot != -1) {
                 inventory.setItem(slot, item);
             }
-
-            prepareCobblestoneSlot(player);
         }
+        prepareCobblestoneSlot(player);
+        fillEmptySlots();
+    }
 
+    private void fillEmptySlots() {
         ItemStack blackGlassPane = new ItemStack(Material.BLACK_STAINED_GLASS_PANE);
         ItemMeta meta = blackGlassPane.getItemMeta();
         meta.setDisplayName(Message.EMPTY_SLOT_NAME.getText());
@@ -89,7 +71,7 @@ public class DropGUI {
         cobbleMeta.setLore(cobbleLore);
         cobbleMeta.setDisplayName(ChatColor.WHITE + "Kamien");
         cobbleItem.setItemMeta(cobbleMeta);
-        inventory.setItem(itemSlots.get("COBBLESTONE"), cobbleItem);
+        inventory.setItem(slotManager.getSlotForItem("COBBLESTONE"), cobbleItem);
     }
 
     public Inventory getInventory() {

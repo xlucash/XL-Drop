@@ -11,17 +11,20 @@ import java.util.List;
 public class DropTabCompleter implements TabCompleter {
     @Override
     public List<String> onTabComplete(CommandSender commandSender, Command command, String label, String[] args) {
-        List<String> list = new ArrayList<>();
-        if (command.getName().equalsIgnoreCase("drop")) {
-            if(commandSender instanceof Player) {
-                Player player = (Player) commandSender;
-                if (args.length == 1) {
-                    if (player.hasPermission("drop.reload")) {
-                        list.add("reload");
-                    }
-                }
-            }
+        List<String> suggestions = new ArrayList<>();
+
+        if(isDropCommand(command) && senderIsPlayerWithPermission(commandSender, "drop.reload")) {
+            suggestions.add("reload");
         }
-        return list;
+
+        return suggestions;
+    }
+
+    private boolean isDropCommand(Command command) {
+        return command.getName().equalsIgnoreCase("drop");
+    }
+
+    private boolean senderIsPlayerWithPermission(CommandSender sender, String permission) {
+        return sender instanceof Player && sender.hasPermission(permission);
     }
 }

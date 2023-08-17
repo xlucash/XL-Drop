@@ -1,4 +1,4 @@
-package me.xlucash.xlucashdrop.utils;
+package me.xlucash.xlucashdrop.config;
 
 import me.xlucash.xlucashdrop.DropMain;
 import org.bukkit.configuration.file.FileConfiguration;
@@ -13,15 +13,16 @@ public class ConfigManager {
     }
 
     public void loadConfig() {
-        initConfig();
-    }
-    private void initConfig() {
         plugin.saveDefaultConfig();
         config = plugin.getConfig();
     }
 
-    public FileConfiguration getConfig() {
-        return config;
+    public String getString(String path) {
+        return config.getString(path);
+    }
+
+    public double getDouble(String path) {
+        return config.getDouble(path);
     }
 
     public void reloadConfig() {

@@ -1,6 +1,7 @@
 package me.xlucash.xlucashdrop.listeners;
 
 import me.xlucash.xlucashdrop.DropMain;
+import me.xlucash.xlucashdrop.config.DropConfig;
 import me.xlucash.xlucashdrop.enums.Message;
 import org.bukkit.ChatColor;
 import org.bukkit.Material;
@@ -16,10 +17,12 @@ import java.util.*;
 
 public class InventoryClickListener implements Listener {
     private final DropMain plugin;
+    private final DropConfig dropConfig;
     private final Map<UUID, Long> lastClickTime = new HashMap<>();
 
-    public InventoryClickListener(DropMain plugin) {
+    public InventoryClickListener(DropMain plugin, DropConfig dropConfig) {
         this.plugin = plugin;
+        this.dropConfig = dropConfig;
     }
     @EventHandler
     public void onInventoryClick(InventoryClickEvent event) {
