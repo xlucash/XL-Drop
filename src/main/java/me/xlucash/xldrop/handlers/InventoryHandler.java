@@ -1,0 +1,77 @@
+package me.xlucash.xldrop.handlers;
+
+import me.xlucash.xldrop.DropMain;
+import me.xlucash.xldrop.config.ConfigManager;
+import me.xlucash.xldrop.enums.Message;
+import org.bukkit.ChatColor;
+import org.bukkit.Material;
+import org.bukkit.entity.Player;
+import org.bukkit.event.inventory.InventoryClickEvent;
+import org.bukkit.inventory.ItemStack;
+import org.bukkit.inventory.meta.ItemMeta;
+
+import java.util.ArrayList;
+import java.util.List;
+import java.util.Map;
+import java.util.UUID;
+
+public class InventoryHandler {
+    private static final long CLICK_INTERVAL = 250; // 250ms
+    private final DropMain plugin;
+    private final ConfigManager configManager;
+
+    public InventoryHandler(DropMain plugin, ConfigManager configManager) {
+        this.plugin = plugin;
+        this.configManager = configManager;
+    }
+
+    public void handleInventoryClick(InventoryClickEvent event, Map<UUID, Long> lastClickTime) {
+        if(!event.getView().getTitle().equals(Message.GUI_TITLE.getText())) {
+            return;
+        }
+        event.setCancelled(true);
+
+        if (event.getClickedInventory() != event.getView().getTopInventory()) {
+            return;
+        }
+
+        Player player = (Player) event.getWhoClicked();
+        long currentTime = System.currentTimeMillis();
+
+        if (lastClickTime.containsKey(player.getUniqueId())) {
+            long timeSinceLastClick = currentTime - lastClickTime.get(player.getUniqueId());
+            if (timeSinceLastClick < CLICK_INTERVAL) {
+                player.sendMessage(Message.FAST_CLICK.getText());
+                return;
+            }
+        }
+
+        lastClickTime.put(player.getUniqueId(), currentTime);
+
+        ItemStack clickedItem = event.getCurrentItem();
+
+        if (clickedItem != null && clickedItem.getType() != Material.BLACK_STAINED_GLASS_PANE) {
+            String itemName = clickedItem.getType().name();
+            String displayName = plugin.getConfig().getString("drops." + itemName + ".displayName");
+            boolean currentStatus = plugin.getDatabaseManager().isDropEnabled(player.getUniqueId(), itemName);
+            plugin.getDatabaseManager().setDropEnabled(player.getUniqueId(), itemName, !currentStatus);
+
+            ItemMeta meta = clickedItem.getItemMeta();
+            List<String> lore = meta.getLore();
+            if (lore == null) lore = new ArrayList<>();
+
+            if (lore.size() == 1) {
+                lore.add(!currentStatus ? Message.DROP_ENABLED.getText() : Message.DROP_DISABLED.getText());
+            } else if (lore.size() > 1) {
+                lore.set(1, !currentStatus ? Message.DROP_ENABLED.getText() : Message.DROP_DISABLED.getText());
+            }
+
+            meta.setLore(lore);
+            clickedItem.setItemMeta(meta);
+            String statusMessage = String.format(Message.DROP_STATUS_CHANGED.getText(),
+                    ChatColor.WHITE + (itemName.equals("COBBLESTONE") ? "Cobblestone" : displayName),
+                    !currentStatus ? Message.STATUS_ENABLED.getText() : Message.STATUS_DISABLED.getText());
+            player.sendMessage(statusMessage);
+        }
+    }
+}
