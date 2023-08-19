@@ -4,6 +4,7 @@ import me.xlucash.xldrop.DropMain;
 import me.xlucash.xldrop.config.ConfigManager;
 import me.xlucash.xldrop.hooks.SuperiorSkyblockHook;
 import org.bukkit.Material;
+import org.bukkit.enchantments.Enchantment;
 import org.bukkit.entity.Player;
 import org.bukkit.inventory.ItemStack;
 
@@ -55,10 +56,10 @@ public class DropCalculator {
     }
 
     private int getFortuneLevel(ItemStack item) {
-        if (item == null || !item.hasItemMeta() || !item.getItemMeta().hasEnchant(org.bukkit.enchantments.Enchantment.LOOT_BONUS_BLOCKS)) {
+        if (item == null || !item.hasItemMeta() || !item.getItemMeta().hasEnchant(Enchantment.LOOT_BONUS_BLOCKS)) {
             return 0;
         }
-        return item.getItemMeta().getEnchantLevel(org.bukkit.enchantments.Enchantment.LOOT_BONUS_BLOCKS);
+        return item.getItemMeta().getEnchantLevel(Enchantment.LOOT_BONUS_BLOCKS);
     }
 
     private int getDropAmountWithFortune(int fortuneLevel) {

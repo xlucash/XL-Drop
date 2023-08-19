@@ -5,6 +5,7 @@ import me.xlucash.xldrop.DropMain;
 import java.sql.Connection;
 import java.sql.DriverManager;
 import java.sql.SQLException;
+import java.sql.Statement;
 
 public class DatabaseConnectionManager {
     private final DropMain plugin;
@@ -34,6 +35,7 @@ public class DatabaseConnectionManager {
 
             connection = DriverManager.getConnection("jdbc:mysql://" +
                     this.host + ":" + this.port + "/" + this.database, this.username, this.password);
+            createTableIfNotExists();
         } catch (SQLException e) {
             DatabaseManager.handleDatabaseError(e, plugin);
         }
@@ -51,6 +53,29 @@ public class DatabaseConnectionManager {
 
     public Connection getConnection() {
         return connection;
+    }
+
+    private void createTableIfNotExists() {
+        try (Statement statement = connection.createStatement()) {
+            statement.execute(
+                    "CREATE TABLE IF NOT EXISTS player_drops (" +
+                            "player_uuid VARCHAR(36) NOT NULL," +
+                            "item_name VARCHAR(255) NOT NULL," +
+                            "is_enabled BOOLEAN DEFAULT TRUE," +
+                            "PRIMARY KEY (player_uuid, item_name))"
+            );
+            statement.execute(
+                    "CREATE TABLE IF NOT EXISTS stone_generators (" +
+                            "x INT NOT NULL," +
+                            "y INT NOT NULL," +
+                            "z INT NOT NULL," +
+                            "world VARCHAR(255) NOT NULL," +
+                            "owner_uuid VARCHAR(36) NOT NULL," +
+                            "PRIMARY KEY (x, y, z, world))"
+            );
+        } catch (SQLException e) {
+            DatabaseManager.handleDatabaseError(e, plugin);
+        }
     }
 
 }

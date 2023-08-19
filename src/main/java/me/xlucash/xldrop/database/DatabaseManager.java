@@ -1,6 +1,7 @@
 package me.xlucash.xldrop.database;
 
 import me.xlucash.xldrop.DropMain;
+import me.xlucash.xldrop.enums.Message;
 import org.bukkit.Location;
 
 import java.util.List;
@@ -52,7 +53,8 @@ public class DatabaseManager {
     }
 
     protected static void handleDatabaseError(Exception e, DropMain plugin) {
-        plugin.getLogger().severe("Wystąpił błąd podczas łączenia z bazą danych! Sprawdź konfigurację pluginu!");
+        plugin.getLogger().severe(Message.DATABASE_CONNECTION_ERROR.getText());
+        plugin.getLogger().severe(e.getMessage());
         plugin.getServer().getPluginManager().disablePlugin(plugin);
     }
 }

@@ -16,13 +16,14 @@ public final class DropMain extends JavaPlugin {
 
     @Override
     public void onEnable() {
-        databaseManager = new DatabaseManager(this);
         configManager = new ConfigManager(this);
         recipeManager = new RecipeManager(this);
         superiorSkyblockHook = new SuperiorSkyblockHook(this, configManager);
 
         configManager.loadConfig();
         recipeManager.registerRecipes();
+
+        databaseManager = new DatabaseManager(this);
 
         pluginInitializer = new PluginInitializer(this, configManager, superiorSkyblockHook);
         pluginInitializer.registerCommands();

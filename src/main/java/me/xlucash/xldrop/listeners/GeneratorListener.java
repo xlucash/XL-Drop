@@ -55,7 +55,7 @@ public class GeneratorListener implements Listener {
                 player.getInventory().addItem(RecipeManager.getGeneratorItem());
                 player.sendMessage(Message.GENERATOR_DESTROYED.getText());
             } else if (event.getBlock().getType() == Material.STONE) {
-                generatorManager.addGenerator(event.getBlock().getLocation(), player.getUniqueId());
+                generatorManager.generateStoneTask(event.getBlock().getLocation());
             }
         }
     }

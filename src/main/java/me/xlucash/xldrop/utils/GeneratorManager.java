@@ -30,7 +30,7 @@ public class GeneratorManager {
         }
     }
 
-    private void generateStoneTask(Location location) {
+    public void generateStoneTask(Location location) {
         int taskId = Bukkit.getScheduler().runTaskLater(plugin, () -> {
             location.getBlock().setType(Material.STONE);
             generatorTasks.remove(location);

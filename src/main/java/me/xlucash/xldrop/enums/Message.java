@@ -21,7 +21,8 @@ public enum Message {
     STATUS_ENABLED("§aWłączony"),
     STATUS_DISABLED("§cWyłączony"),
     SUPERIORSKYBLOCK_HOOKED("Hook z SuperiorSkyblock zostal zaladowany!"),
-    SUPERIORSKYBLOCK_HOOK_FAILED("Hook z SuperiorSkyblock nie zostal zaladowany!");
+    SUPERIORSKYBLOCK_HOOK_FAILED("Hook z SuperiorSkyblock nie zostal zaladowany!"),
+    DATABASE_CONNECTION_ERROR("Wystapil blad podczas laczenia z baza danych! Sprawdz konfiguracje pluginu!");
 
     private final String message;
 
