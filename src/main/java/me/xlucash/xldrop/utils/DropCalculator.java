@@ -1,50 +1,29 @@
-package me.xlucash.xlucashdrop.listeners;
+package me.xlucash.xldrop.utils;
 
-import me.xlucash.xlucashdrop.DropMain;
-import me.xlucash.xlucashdrop.hooks.SuperiorSkyblockHook;
-import org.bukkit.GameMode;
+import me.xlucash.xldrop.DropMain;
+import me.xlucash.xldrop.config.ConfigManager;
+import me.xlucash.xldrop.hooks.SuperiorSkyblockHook;
 import org.bukkit.Material;
+import org.bukkit.enchantments.Enchantment;
 import org.bukkit.entity.Player;
-import org.bukkit.event.EventHandler;
-import org.bukkit.event.Listener;
-import org.bukkit.event.block.BlockBreakEvent;
 import org.bukkit.inventory.ItemStack;
 
 import java.util.HashMap;
 import java.util.Random;
 
-public class BlockBreakListener implements Listener {
+public class DropCalculator {
+    private final ConfigManager configManager;
+    private final SuperiorSkyblockHook superiorSkyblockHook;
     private final DropMain plugin;
     private final Random random = new Random();
-    public BlockBreakListener(DropMain plugin) {
+
+    public DropCalculator(ConfigManager configManager, SuperiorSkyblockHook superiorSkyblockHook, DropMain plugin) {
+        this.configManager = configManager;
+        this.superiorSkyblockHook = superiorSkyblockHook;
         this.plugin = plugin;
     }
 
-    @EventHandler
-    public void onBlockBreak(BlockBreakEvent event) {
-        Player player = event.getPlayer();
-        String allowedWorld = plugin.getConfig().getString("world");
-
-        if (!player.getWorld().getName().equals(allowedWorld)) {
-            return;
-        }
-
-        if (event.getBlock().getType() != Material.STONE) {
-            return;
-        }
-
-        if (player.getGameMode() != GameMode.SURVIVAL) {
-            return;
-        }
-
-        event.setDropItems(false);
-
-        Material toolType = player.getInventory().getItemInMainHand().getType();
-        if (!toolType.name().endsWith("_PICKAXE")) {
-            return;
-        }
-
-        giveExp(player, plugin.getConfig().getDouble("stone_exp_drop"));
+    public void calculateDrop(Player player) {
         if (plugin.getDatabaseManager().isDropEnabled(player.getUniqueId(), "COBBLESTONE")) {
             ItemStack cobbleItem = new ItemStack(Material.COBBLESTONE);
             safelyAddToInventory(player, cobbleItem);
@@ -52,9 +31,9 @@ public class BlockBreakListener implements Listener {
 
         int fortuneLevel = getFortuneLevel(player.getInventory().getItemInMainHand());
 
-        for (String item : plugin.getConfig().getConfigurationSection("drops").getKeys(false)) {
-            double chance = plugin.getConfig().getDouble("drops." + item + ".chance");
-            chance += SuperiorSkyblockHook.getDropChanceMultiplier(player);
+        for (String item : configManager.getConfigurationSection("drops")) {
+            double chance = configManager.getChanceForItem(item);
+            chance += superiorSkyblockHook.getDropChanceMultiplier(player);
 
             if (!plugin.getDatabaseManager().isDropEnabled(player.getUniqueId(), item)) {
                 continue;
@@ -75,17 +54,12 @@ public class BlockBreakListener implements Listener {
             player.getWorld().dropItemNaturally(player.getLocation(), leftover);
         }
     }
-    private void giveExp(Player player, double baseExpAmount) {
-        int playerLevel = player.getLevel();
-        double adjustedExpAmount = baseExpAmount * (1 + (playerLevel * 0.1));
-        player.giveExp((int) adjustedExpAmount);
-    }
 
     private int getFortuneLevel(ItemStack item) {
-        if (item == null || !item.hasItemMeta() || !item.getItemMeta().hasEnchant(org.bukkit.enchantments.Enchantment.LOOT_BONUS_BLOCKS)) {
+        if (item == null || !item.hasItemMeta() || !item.getItemMeta().hasEnchant(Enchantment.LOOT_BONUS_BLOCKS)) {
             return 0;
         }
-        return item.getItemMeta().getEnchantLevel(org.bukkit.enchantments.Enchantment.LOOT_BONUS_BLOCKS);
+        return item.getItemMeta().getEnchantLevel(Enchantment.LOOT_BONUS_BLOCKS);
     }
 
     private int getDropAmountWithFortune(int fortuneLevel) {

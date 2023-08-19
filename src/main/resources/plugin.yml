@@ -1,6 +1,6 @@
-name: xlucashDrop
+name: XLDrop
 version: '${project.version}'
-main: me.xlucash.xlucashdrop.DropMain
+main: me.xlucash.xldrop.DropMain
 api-version: '1.19'
 commands:
   drop:

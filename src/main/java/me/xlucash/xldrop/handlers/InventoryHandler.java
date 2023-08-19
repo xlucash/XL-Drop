@@ -1,28 +1,31 @@
-package me.xlucash.xlucashdrop.listeners;
+package me.xlucash.xldrop.handlers;
 
-import me.xlucash.xlucashdrop.DropMain;
-import me.xlucash.xlucashdrop.enums.Message;
+import me.xlucash.xldrop.DropMain;
+import me.xlucash.xldrop.config.ConfigManager;
+import me.xlucash.xldrop.enums.Message;
 import org.bukkit.ChatColor;
 import org.bukkit.Material;
 import org.bukkit.entity.Player;
-import org.bukkit.event.EventHandler;
-import org.bukkit.event.Listener;
 import org.bukkit.event.inventory.InventoryClickEvent;
-import org.bukkit.inventory.Inventory;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.inventory.meta.ItemMeta;
 
-import java.util.*;
+import java.util.ArrayList;
+import java.util.List;
+import java.util.Map;
+import java.util.UUID;
 
-public class InventoryClickListener implements Listener {
+public class InventoryHandler {
+    private static final long CLICK_INTERVAL = 250; // 250ms
     private final DropMain plugin;
-    private final Map<UUID, Long> lastClickTime = new HashMap<>();
+    private final ConfigManager configManager;
 
-    public InventoryClickListener(DropMain plugin) {
+    public InventoryHandler(DropMain plugin, ConfigManager configManager) {
         this.plugin = plugin;
+        this.configManager = configManager;
     }
-    @EventHandler
-    public void onInventoryClick(InventoryClickEvent event) {
+
+    public void handleInventoryClick(InventoryClickEvent event, Map<UUID, Long> lastClickTime) {
         if(!event.getView().getTitle().equals(Message.GUI_TITLE.getText())) {
             return;
         }
@@ -37,7 +40,7 @@ public class InventoryClickListener implements Listener {
 
         if (lastClickTime.containsKey(player.getUniqueId())) {
             long timeSinceLastClick = currentTime - lastClickTime.get(player.getUniqueId());
-            if (timeSinceLastClick < 250) { // 250ms
+            if (timeSinceLastClick < CLICK_INTERVAL) {
                 player.sendMessage(Message.FAST_CLICK.getText());
                 return;
             }
@@ -69,29 +72,6 @@ public class InventoryClickListener implements Listener {
                     ChatColor.WHITE + (itemName.equals("COBBLESTONE") ? "Cobblestone" : displayName),
                     !currentStatus ? Message.STATUS_ENABLED.getText() : Message.STATUS_DISABLED.getText());
             player.sendMessage(statusMessage);
-        }
-
-        refreshGuiForPlayer(player, event.getInventory());
-    }
-
-    private void refreshGuiForPlayer(Player player, Inventory inventory) {
-        for (String item : plugin.getConfig().getConfigurationSection("drops").getKeys(false)) {
-            ItemStack guiItem = inventory.getItem(plugin.getConfig().getInt("drops." + item + ".slot"));
-            if (guiItem != null && guiItem.getType().name().equals(item)) {
-                boolean isEnabled = plugin.getDatabaseManager().isDropEnabled(player.getUniqueId(), item);
-                updateItemLore(guiItem, isEnabled);
-            }
-        }
-        updateItemLore(new ItemStack(Material.COBBLESTONE), plugin.getDatabaseManager().isDropEnabled(player.getUniqueId(), "COBBLESTONE"));
-    }
-
-    private void updateItemLore(ItemStack item, boolean isEnabled) {
-        ItemMeta meta = item.getItemMeta();
-        List<String> lore = meta.getLore();
-        if (lore != null && lore.size() > 1) {
-            lore.set(1, isEnabled ? Message.DROP_ENABLED.getText() : Message.DROP_DISABLED.getText());
-            meta.setLore(lore);
-            item.setItemMeta(meta);
         }
     }
 }

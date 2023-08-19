@@ -1,8 +1,8 @@
-package me.xlucash.xlucashdrop.enums;
+package me.xlucash.xldrop.enums;
 
 public enum Message {
-    PLUGIN_ENABLED("[xlucashDrop] Plugin zostal wlaczony!"),
-    PLUGIN_DISABLED("[xlucashDrop] Plugin zostal wylaczony!"),
+    PLUGIN_ENABLED("Plugin zostal wlaczony!"),
+    PLUGIN_DISABLED("Plugin zostal wylaczony!"),
     GENERATOR_NAME("§6Generator Stone"),
     COMMAND_ONLY_FOR_PLAYERS("Tylko gracze moga uzywac tej komendy!"),
     NO_PERMISSION_RELOAD("§cNie masz uprawnien do przeladowania pluginu!"),
@@ -16,10 +16,14 @@ public enum Message {
     GENERATOR_PLACED("§aPomyślnie postawiono generator stone!"),
     GENERATOR_DESTROYED("§aPomyślnie zniszczono generator stone!"),
     GENERATOR_CANNOT_BUILD("§cNie możesz stawiać bloków w miejscu generatora!"),
+    GENERATOR_PREVENT_PLACE("§cNie możesz stawiać generatora w tym miejscu!"),
     FAST_CLICK("§cNie klikaj tak szybko!"),
     DROP_STATUS_CHANGED("§7Status dropu %s §7został zmieniony na: %s"),
     STATUS_ENABLED("§aWłączony"),
-    STATUS_DISABLED("§cWyłączony");
+    STATUS_DISABLED("§cWyłączony"),
+    SUPERIORSKYBLOCK_HOOKED("Hook z SuperiorSkyblock zostal zaladowany!"),
+    SUPERIORSKYBLOCK_HOOK_FAILED("Hook z SuperiorSkyblock nie zostal zaladowany!"),
+    DATABASE_CONNECTION_ERROR("Wystapil blad podczas laczenia z baza danych! Sprawdz konfiguracje pluginu!");
 
     private final String message;
 

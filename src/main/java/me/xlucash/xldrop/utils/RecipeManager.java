@@ -1,7 +1,7 @@
-package me.xlucash.xlucashdrop.utils;
+package me.xlucash.xldrop.utils;
 
-import me.xlucash.xlucashdrop.DropMain;
-import me.xlucash.xlucashdrop.enums.Message;
+import me.xlucash.xldrop.DropMain;
+import me.xlucash.xldrop.enums.Message;
 import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
 import org.bukkit.Material;
