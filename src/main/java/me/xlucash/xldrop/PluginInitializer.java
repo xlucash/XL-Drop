@@ -32,7 +32,7 @@ public class PluginInitializer {
     public void registerEvents() {
         pluginManager.registerEvents(new BlockBreakListener(plugin, configManager, superiorSkyblockHook), plugin);
         pluginManager.registerEvents(new InventoryClickListener(plugin, configManager), plugin);
-        pluginManager.registerEvents(new GeneratorListener(plugin), plugin);
+        pluginManager.registerEvents(new GeneratorListener(plugin, configManager), plugin);
     }
 
     public void loadHooks() {

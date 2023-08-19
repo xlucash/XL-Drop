@@ -31,12 +31,12 @@ public class SuperiorSkyblockHook {
         return island == null ? 0 : island.getIslandLevel();
     }
 
-    public boolean canPlayerBreakOnIsland(Player player, Location location) {
+    public boolean checkPlayerPrivilege(Player player, Location location, String privilege) {
         Island island = getIslandAtLocation(location);
         if (island == null) {
-            return false;
+            return true;
         }
-        return island.hasPermission(player, IslandPrivilege.getByName("BREAK"));
+        return island.hasPermission(player, IslandPrivilege.getByName(privilege));
     }
 
     public boolean playerHasIsland(Player player) {

@@ -16,6 +16,7 @@ public enum Message {
     GENERATOR_PLACED("§aPomyślnie postawiono generator stone!"),
     GENERATOR_DESTROYED("§aPomyślnie zniszczono generator stone!"),
     GENERATOR_CANNOT_BUILD("§cNie możesz stawiać bloków w miejscu generatora!"),
+    GENERATOR_PREVENT_PLACE("§cNie możesz stawiać generatora w tym miejscu!"),
     FAST_CLICK("§cNie klikaj tak szybko!"),
     DROP_STATUS_CHANGED("§7Status dropu %s §7został zmieniony na: %s"),
     STATUS_ENABLED("§aWłączony"),
