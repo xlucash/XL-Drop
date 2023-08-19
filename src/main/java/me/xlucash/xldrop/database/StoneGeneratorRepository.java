@@ -39,7 +39,7 @@ public class StoneGeneratorRepository {
             prepareSQLStatement(location, statement);
             statement.executeUpdate();
         } catch (SQLException e) {
-            // Handle error
+            DatabaseManager.handleDatabaseError(e, plugin);
         }
     }
 

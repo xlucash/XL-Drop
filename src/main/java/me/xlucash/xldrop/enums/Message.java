@@ -1,8 +1,8 @@
 package me.xlucash.xldrop.enums;
 
 public enum Message {
-    PLUGIN_ENABLED("[xlucashDrop] Plugin zostal wlaczony!"),
-    PLUGIN_DISABLED("[xlucashDrop] Plugin zostal wylaczony!"),
+    PLUGIN_ENABLED("Plugin zostal wlaczony!"),
+    PLUGIN_DISABLED("Plugin zostal wylaczony!"),
     GENERATOR_NAME("§6Generator Stone"),
     COMMAND_ONLY_FOR_PLAYERS("Tylko gracze moga uzywac tej komendy!"),
     NO_PERMISSION_RELOAD("§cNie masz uprawnien do przeladowania pluginu!"),

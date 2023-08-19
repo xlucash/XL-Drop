@@ -32,11 +32,12 @@ drop_multiplier_per_island_level:
   multiplier_value: 0.01
 # Amount of exp dropped by breaking stone
 stone_exp_drop: 1
-# Database connection settings (MySQL)
+# Database connection settings (SQLite/MySQL)
 database:
-  type: "MySQL"
-  host: "localhost"
-  port: 3306
-  name: "xlucashdrop_db"
-  username: "root"
-  password: ""
+  type: "SQLite"
+# Uncomment below lines to use MySQL database
+#  host: "localhost"
+#  port: 3306
+#  name: "xlucashdrop_db"
+#  username: "root"
+#  password: ""
