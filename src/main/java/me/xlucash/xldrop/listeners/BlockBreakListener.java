@@ -35,6 +35,10 @@ public class BlockBreakListener implements Listener {
             return;
         }
 
+        if(!superiorSkyblockHook.canPlayerBreakOnIsland(player, event.getBlock().getLocation())) {
+            return;
+        }
+
         if (event.getBlock().getType() != Material.STONE) {
             return;
         }

@@ -2,8 +2,10 @@ package me.xlucash.xldrop.hooks;
 
 import com.bgsoftware.superiorskyblock.api.SuperiorSkyblockAPI;
 import com.bgsoftware.superiorskyblock.api.island.Island;
+import com.bgsoftware.superiorskyblock.api.island.IslandPrivilege;
 import me.xlucash.xldrop.DropMain;
 import me.xlucash.xldrop.config.ConfigManager;
+import org.bukkit.Location;
 import org.bukkit.entity.Player;
 
 public class SuperiorSkyblockHook {
@@ -20,9 +22,21 @@ public class SuperiorSkyblockHook {
         return SuperiorSkyblockAPI.getPlayer(player).getIsland();
     }
 
+    public Island getIslandAtLocation(Location location) {
+        return SuperiorSkyblockAPI.getIslandAt(location);
+    }
+
     public Number getIslandLevel(Player player) {
         Island island = getIsland(player);
         return island == null ? 0 : island.getIslandLevel();
+    }
+
+    public boolean canPlayerBreakOnIsland(Player player, Location location) {
+        Island island = getIslandAtLocation(location);
+        if (island == null) {
+            return false;
+        }
+        return island.hasPermission(player, IslandPrivilege.getByName("BREAK"));
     }
 
     public boolean playerHasIsland(Player player) {
