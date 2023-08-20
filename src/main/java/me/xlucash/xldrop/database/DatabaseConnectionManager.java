@@ -9,6 +9,9 @@ import java.sql.DriverManager;
 import java.sql.SQLException;
 import java.sql.Statement;
 
+/**
+ * Manages the database connection for the plugin.
+ */
 public class DatabaseConnectionManager {
     private final DropMain plugin;
     private Connection connection;
@@ -21,6 +24,9 @@ public class DatabaseConnectionManager {
         connect();
     }
 
+    /**
+     * Loads the database configuration from the plugin's config.
+     */
     private void loadConfig() {
         this.type = plugin.getConfig().getString("database.type", "SQLite");
         if (this.type.equals("MySQL")) {
@@ -32,6 +38,9 @@ public class DatabaseConnectionManager {
         }
     }
 
+    /**
+     * Connects to the database based on the loaded configuration.
+     */
     public void connect() {
         try {
             if (connection != null && !connection.isClosed()) {
@@ -60,6 +69,9 @@ public class DatabaseConnectionManager {
         }
     }
 
+    /**
+     * Disconnects from the database.
+     */
     public void disconnect() {
         try {
             if (connection != null && !connection.isClosed()) {
@@ -70,10 +82,17 @@ public class DatabaseConnectionManager {
         }
     }
 
+    /**
+     * Returns the current database connection instance.
+     * @return The database connection.
+     */
     public Connection getConnection() {
         return connection;
     }
 
+    /**
+     * Creates the necessary tables if they do not exist.
+     */
     private void createTableIfNotExists() {
         try (Statement statement = connection.createStatement()) {
             statement.execute(

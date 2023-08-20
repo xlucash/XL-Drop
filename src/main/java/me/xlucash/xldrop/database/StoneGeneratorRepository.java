@@ -13,6 +13,9 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.UUID;
 
+/**
+ * Repository class for managing stone generators in the database.
+ */
 public class StoneGeneratorRepository {
     private final Connection connection;
     private final DropMain plugin;
@@ -22,6 +25,11 @@ public class StoneGeneratorRepository {
         this.plugin = plugin;
     }
 
+    /**
+     * Adds a new stone generator to the database.
+     * @param location  The location of the generator.
+     * @param ownerUUID The UUID of the generator's owner.
+     */
     public void addGenerator(Location location, UUID ownerUUID) {
         try (PreparedStatement statement = connection.prepareStatement(
                 "INSERT INTO stone_generators (x, y, z, world, owner_uuid) VALUES (?, ?, ?, ?, ?)")) {
@@ -33,6 +41,10 @@ public class StoneGeneratorRepository {
         }
     }
 
+    /**
+     * Removes a stone generator from the database.
+     * @param location The location of the generator.
+     */
     public void removeGenerator(Location location) {
         try (PreparedStatement statement = connection.prepareStatement(
                 "DELETE FROM stone_generators WHERE x = ? AND y = ? AND z = ? AND world = ?")) {
@@ -43,6 +55,11 @@ public class StoneGeneratorRepository {
         }
     }
 
+    /**
+     * Checks if a location is a stone generator.
+     * @param location The location to check.
+     * @return True if the location is a stone generator, false otherwise.
+     */
     public boolean isGenerator(Location location) {
         try (PreparedStatement statement = connection.prepareStatement(
                 "SELECT * FROM stone_generators WHERE x = ? AND y = ? AND z = ? AND world = ?")) {
@@ -55,6 +72,10 @@ public class StoneGeneratorRepository {
         return false;
     }
 
+    /**
+     * Retrieves all the locations of stone generators from the database.
+     * @return A list of stone generator locations.
+     */
     public List<Location> getAllGeneratorLocations() {
         List<Location> locations = new ArrayList<>();
 
@@ -76,6 +97,12 @@ public class StoneGeneratorRepository {
         return locations;
     }
 
+    /**
+     * Prepares the SQL statement with the given location.
+     * @param location  The location to set in the statement.
+     * @param statement The SQL statement to prepare.
+     * @throws SQLException If there's an error setting the parameters.
+     */
     private static void prepareSQLStatement(Location location, PreparedStatement statement) throws SQLException {
         statement.setInt(1, location.getBlockX());
         statement.setInt(2, location.getBlockY());

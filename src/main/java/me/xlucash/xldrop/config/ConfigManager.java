@@ -5,6 +5,9 @@ import org.bukkit.configuration.file.FileConfiguration;
 
 import java.util.Set;
 
+/**
+ * Manages the configuration for the plugin.
+ */
 public class ConfigManager {
 
     private final DropMain plugin;
@@ -14,16 +17,23 @@ public class ConfigManager {
         this.plugin = plugin;
     }
 
+    /**
+     * Loads the default configuration for the plugin.
+     */
     public void loadConfig() {
         plugin.saveDefaultConfig();
         config = plugin.getConfig();
     }
 
+    /**
+     * Reloads the configuration for the plugin.
+     */
     public void reloadConfig() {
         plugin.reloadConfig();
         config = plugin.getConfig();
     }
 
+    // Methods for retrieving values from the config.
     public double getChanceForItem(String itemKey) {
         return plugin.getConfig().getDouble("drops." + itemKey + ".chance");
     }

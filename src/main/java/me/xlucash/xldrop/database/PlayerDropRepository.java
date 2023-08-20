@@ -8,6 +8,9 @@ import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.util.UUID;
 
+/**
+ * Repository class for managing player-specific drop settings in the database.
+ */
 public class PlayerDropRepository {
     private final Connection connection;
     private final DropMain plugin;
@@ -17,6 +20,12 @@ public class PlayerDropRepository {
         this.plugin = plugin;
     }
 
+    /**
+     * Sets the drop enabled status for a specific item for a player.
+     * @param playerUUID The UUID of the player.
+     * @param itemName   The name of the item.
+     * @param isEnabled  The enabled status to set.
+     */
     public void setDropEnabled(UUID playerUUID, String itemName, boolean isEnabled) {
         try (PreparedStatement statement = connection.prepareStatement(
                 "REPLACE INTO player_drops (player_uuid, item_name, is_enabled) VALUES (?, ?, ?)")) {
@@ -29,6 +38,12 @@ public class PlayerDropRepository {
         }
     }
 
+    /**
+     * Checks if the drop is enabled for a specific item for a player.
+     * @param playerUUID The UUID of the player.
+     * @param itemName   The name of the item.
+     * @return True if the drop is enabled, false otherwise.
+     */
     public boolean isDropEnabled(UUID playerUUID, String itemName) {
         try (PreparedStatement statement = connection.prepareStatement(
                 "SELECT is_enabled FROM player_drops WHERE player_uuid = ? AND item_name = ?")) {
@@ -41,6 +56,7 @@ public class PlayerDropRepository {
         } catch (SQLException e) {
             DatabaseManager.handleDatabaseError(e, plugin);
         }
+        // Default to true if no record is found
         return true;
     }
 }
