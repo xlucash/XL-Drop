@@ -13,6 +13,9 @@ import org.bukkit.inventory.meta.ItemMeta;
 import java.util.ArrayList;
 import java.util.List;
 
+/**
+ * Manages custom recipes for the Drop plugin.
+ */
 public class RecipeManager {
     private final DropMain plugin;
 
@@ -24,6 +27,9 @@ public class RecipeManager {
         registerGeneratorRecipe();
     }
 
+    /**
+     * Registers the custom recipe for the stone generator.
+     */
     private void registerGeneratorRecipe() {
         ShapedRecipe generatorRecipe = new ShapedRecipe(new NamespacedKey(plugin, "stone_generator"), getGeneratorItem());
         generatorRecipe.shape("CCC", "CDC", "CCC");
@@ -32,6 +38,10 @@ public class RecipeManager {
         Bukkit.addRecipe(generatorRecipe);
     }
 
+    /**
+     * Creates and returns the custom ItemStack for the stone generator.
+     * @return The custom ItemStack for the stone generator.
+     */
     public static ItemStack getGeneratorItem() {
         ItemStack generator = new ItemStack(Material.END_STONE);
         ItemMeta meta = generator.getItemMeta();

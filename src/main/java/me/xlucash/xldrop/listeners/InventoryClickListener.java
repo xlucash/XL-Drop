@@ -11,9 +11,13 @@ import org.bukkit.event.inventory.InventoryClickEvent;
 
 import java.util.*;
 
+/**
+ * Listener responsible for handling inventory click events.
+ */
 public class InventoryClickListener implements Listener {
     private final DropMain plugin;
     private final ConfigManager configManager;
+    // Stores the last click time of players to prevent rapid clicks
     private final Map<UUID, Long> lastClickTime = new HashMap<>();
     private final InventoryHandler inventoryHandler;
     private final GuiRefresher guiRefresher;
@@ -25,6 +29,11 @@ public class InventoryClickListener implements Listener {
         this.guiRefresher = new GuiRefresher(plugin);
     }
 
+    /**
+     * Handles the inventory click event.
+     * Processes the click through the InventoryHandler and updates the GUI if necessary.
+     * @param event The inventory click event.
+     */
     @EventHandler
     public void onInventoryClick(InventoryClickEvent event) {
         inventoryHandler.handleInventoryClick(event, lastClickTime);

@@ -12,6 +12,10 @@ import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
 import org.bukkit.event.block.BlockBreakEvent;
 
+/**
+ * Listener responsible for handling block break events.
+ * It checks if the broken block is a stone in the allowed world and awards experience and drops accordingly.
+ */
 public class BlockBreakListener implements Listener {
     private final DropMain plugin;
     private final ConfigManager configManager;
@@ -26,6 +30,11 @@ public class BlockBreakListener implements Listener {
         this.experienceManager = new ExperienceManager(configManager);
     }
 
+    /**
+     * Handles the event when a block is broken.
+     * Awards experience and calculates drops if the broken block is a stone in the allowed world.
+     * @param event The block break event.
+     */
     @EventHandler
     public void onBlockBreak(BlockBreakEvent event) {
         Player player = event.getPlayer();

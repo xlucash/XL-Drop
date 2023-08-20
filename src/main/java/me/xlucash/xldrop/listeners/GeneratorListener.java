@@ -19,6 +19,9 @@ import org.bukkit.inventory.ItemStack;
 
 import java.util.List;
 
+/**
+ * Listener responsible for handling events related to the stone generator.
+ */
 public class GeneratorListener implements Listener {
     private final DropMain plugin;
     private final GeneratorManager generatorManager;
@@ -32,6 +35,10 @@ public class GeneratorListener implements Listener {
         superiorSkyblockHook = new SuperiorSkyblockHook(plugin, configManager);
     }
 
+    /**
+     * Ensures that all registered generator locations have a stone block on server start.
+     * @param event The server load event.
+     */
     @EventHandler
     public void onServerStart(ServerLoadEvent event) {
         List<Location> generatorLocations = plugin.getDatabaseManager().getAllGeneratorLocations();
@@ -42,6 +49,11 @@ public class GeneratorListener implements Listener {
         }
     }
 
+    /**
+     * Handles the event when a block is placed.
+     * Checks if the block is a generator and handles its placement accordingly.
+     * @param event The block place event.
+     */
     @EventHandler
     public void onBlockPlace(BlockPlaceEvent event) {
         Player player = event.getPlayer();
@@ -67,6 +79,11 @@ public class GeneratorListener implements Listener {
         }
     }
 
+    /**
+     * Handles the event when a block is broken.
+     * Checks if the block is a generator and handles its removal accordingly.
+     * @param event The block break event.
+     */
     @EventHandler
     public void onBlockBreak(BlockBreakEvent event) {
         if (plugin.getDatabaseManager().isGenerator(event.getBlock().getLocation())) {
@@ -85,6 +102,10 @@ public class GeneratorListener implements Listener {
         }
     }
 
+    /**
+     * Ensures that players cannot build in the location of generator.
+     * @param event The block can build event.
+     */
     @EventHandler
     public void onBlockCanBuild(BlockCanBuildEvent event) {
         if (plugin.getDatabaseManager().isGenerator(event.getBlock().getLocation())) {
@@ -93,6 +114,11 @@ public class GeneratorListener implements Listener {
         }
     }
 
+    /**
+     * Checks if the provided item is a generator.
+     * @param item The item to check.
+     * @return True if the item is a generator, false otherwise.
+     */
     private boolean isGenerator(ItemStack item) {
         return item != null && item.getType() == Material.END_STONE && item.hasItemMeta()
                 && Message.GENERATOR_NAME.getText().equals(item.getItemMeta().getDisplayName());

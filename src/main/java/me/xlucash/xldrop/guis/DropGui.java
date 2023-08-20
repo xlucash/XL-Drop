@@ -16,6 +16,9 @@ import org.bukkit.inventory.meta.ItemMeta;
 import java.util.ArrayList;
 import java.util.List;
 
+/**
+ * Represents the GUI for managing drops.
+ */
 public class DropGui {
 
     private final DropMain plugin;
@@ -32,11 +35,19 @@ public class DropGui {
         this.inventory = Bukkit.createInventory(null, 45, Message.GUI_TITLE.getText());
     }
 
+    /**
+     * Opens the drop GUI for the specified player.
+     * @param player The player for whom the GUI should be opened.
+     */
     public void open(Player player) {
         populateItemsForPlayer(player);
         player.openInventory(inventory);
     }
 
+    /**
+     * Populates the GUI with items specific to the player.
+     * @param player The player for whom the items should be populated.
+     */
     private void populateItemsForPlayer(Player player) {
         for (String key : configManager.getConfigurationSection("drops")) {
             ItemStack item = itemFactory.createDropItem(key, player);
@@ -49,6 +60,9 @@ public class DropGui {
         fillEmptySlots();
     }
 
+    /**
+     * Fills empty slots in the GUI with black stained-glass panes.
+     */
     private void fillEmptySlots() {
         ItemStack blackGlassPane = new ItemStack(Material.BLACK_STAINED_GLASS_PANE);
         ItemMeta meta = blackGlassPane.getItemMeta();
@@ -62,6 +76,11 @@ public class DropGui {
         }
     }
 
+    /**
+     * Prepares the cobblestone slot in the GUI.
+     * The cobblestone slot is a special slot that is not configurable in the config file.
+     * @param player The player for whom the cobblestone slot should be prepared.
+     */
     private void prepareCobblestoneSlot(Player player) {
         ItemStack cobbleItem = new ItemStack(Material.COBBLESTONE);
         ItemMeta cobbleMeta = cobbleItem.getItemMeta();
@@ -74,6 +93,10 @@ public class DropGui {
         inventory.setItem(slotManager.getSlotForItem("COBBLESTONE"), cobbleItem);
     }
 
+    /**
+     * Returns the inventory associated with this GUI.
+     * @return The inventory.
+     */
     public Inventory getInventory() {
         return this.inventory;
     }

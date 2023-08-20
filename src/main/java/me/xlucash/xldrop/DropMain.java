@@ -7,6 +7,9 @@ import me.xlucash.xldrop.hooks.SuperiorSkyblockHook;
 import me.xlucash.xldrop.utils.RecipeManager;
 import org.bukkit.plugin.java.JavaPlugin;
 
+/**
+ * Main class for the Drop plugin. Handles the plugin's lifecycle events.
+ */
 public final class DropMain extends JavaPlugin {
     private ConfigManager configManager;
     private DatabaseManager databaseManager;
@@ -14,6 +17,9 @@ public final class DropMain extends JavaPlugin {
     private PluginInitializer pluginInitializer;
     private SuperiorSkyblockHook superiorSkyblockHook;
 
+    /**
+     * Called when the plugin is enabled. Initializes and sets up the plugin's components.
+     */
     @Override
     public void onEnable() {
         configManager = new ConfigManager(this);
@@ -33,12 +39,19 @@ public final class DropMain extends JavaPlugin {
         getLogger().info(Message.PLUGIN_ENABLED.getText());
     }
 
+    /**
+     * Called when the plugin is disabled. Cleans up resources and connections.
+     */
     @Override
     public void onDisable() {
         databaseManager.disconnect();
         getLogger().info(Message.PLUGIN_DISABLED.getText());
     }
 
+    /**
+     * Getter for the DatabaseManager instance.
+     * @return the DatabaseManager instance.
+     */
     public DatabaseManager getDatabaseManager() {
         return databaseManager;
     }
