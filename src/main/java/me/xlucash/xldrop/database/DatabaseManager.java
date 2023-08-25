@@ -51,7 +51,7 @@ public class DatabaseManager {
 
     // Database connection related methods
     public void connect() {
-        connectionManager.connect();
+        connectionManager.getConnection();
     }
 
     public void disconnect() {

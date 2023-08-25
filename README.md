@@ -1,6 +1,6 @@
 # XL-DROP Plugin
 
-The `XL-DROP` plugin is a drop management system for Minecraft. It allows for the configuration of various drops, player permission management, and interaction with a database.
+The `XL-DROP` plugin is a drop management system for Minecraft. It allows for the configuration of various drops and creating stone generators.
 
 ## Features
 
@@ -17,6 +17,7 @@ The `XL-DROP` plugin is a drop management system for Minecraft. It allows for th
 - **Databases**: Supports both MySQL and SQLite.
 - **Dependencies**: 
   - SuperiorSkyblockAPI: For integration with SuperiorSkyblock.
+  - HikariCP: For database connection pooling.
 
 ## Installation
 

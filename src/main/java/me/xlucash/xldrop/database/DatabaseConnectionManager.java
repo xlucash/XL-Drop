@@ -1,11 +1,12 @@
 package me.xlucash.xldrop.database;
 
+import com.zaxxer.hikari.HikariConfig;
+import com.zaxxer.hikari.HikariDataSource;
 import me.xlucash.xldrop.DropMain;
 
 import java.io.File;
 import java.io.IOException;
 import java.sql.Connection;
-import java.sql.DriverManager;
 import java.sql.SQLException;
 import java.sql.Statement;
 
@@ -15,13 +16,14 @@ import java.sql.Statement;
 public class DatabaseConnectionManager {
     private final DropMain plugin;
     private Connection connection;
+    private HikariDataSource dataSource;
     private String host, database, username, password, type;
     private int port;
 
     public DatabaseConnectionManager(DropMain plugin) {
         this.plugin = plugin;
         loadConfig();
-        connect();
+        setupPool();
     }
 
     /**
@@ -39,55 +41,61 @@ public class DatabaseConnectionManager {
     }
 
     /**
-     * Connects to the database based on the loaded configuration.
+     * Sets up the HikariCP connection pool based on the loaded configuration.
+     * For MySQL, it sets up the JDBC URL, username, and password.
+     * For SQLite, it ensures the database file exists and sets up the JDBC URL.
+     * The maximum pool size is also set based on the database type.
      */
-    public void connect() {
-        try {
-            if (connection != null && !connection.isClosed()) {
-                return;
-            }
+    private void setupPool() {
+        HikariConfig config = new HikariConfig();
 
-            switch (type) {
-                case "MySQL":
-                    connection = DriverManager.getConnection("jdbc:mysql://" +
-                            this.host + ":" + this.port + "/" + this.database, this.username, this.password);
-                    break;
-                case "SQLite":
-                    File dbFile = new File(plugin.getDataFolder(), "database.db");
-                    if (!dbFile.exists()) {
+        switch (type) {
+            case "MySQL":
+                config.setJdbcUrl("jdbc:mysql://" + host + ":" + port + "/" + database);
+                config.setUsername(username);
+                config.setPassword(password);
+                config.setMaximumPoolSize(25);
+                break;
+            case "SQLite":
+                File dbFile = new File(plugin.getDataFolder(), "database.db");
+                if (!dbFile.exists()) {
+                    try {
                         dbFile.createNewFile();
+                    } catch (IOException e) {
+                        DatabaseManager.handleDatabaseError(e, plugin);
                     }
-                    connection = DriverManager.getConnection("jdbc:sqlite:" + dbFile.getAbsolutePath());
-                    break;
-                default:
-                    throw new SQLException("Unsupported database type: " + type);
-            }
-
-            createTableIfNotExists();
-        } catch (SQLException | IOException e) {
-            DatabaseManager.handleDatabaseError(e, plugin);
+                }
+                config.setJdbcUrl("jdbc:sqlite:" + dbFile.getAbsolutePath());
+                config.setMaximumPoolSize(10);
+                break;
         }
+
+        dataSource = new HikariDataSource(config);
     }
 
+
     /**
-     * Disconnects from the database.
+     * Disconnects and closes the HikariCP connection pool.
+     * This should be called when the plugin is disabled to free up resources.
      */
     public void disconnect() {
-        try {
-            if (connection != null && !connection.isClosed()) {
-                connection.close();
-            }
-        } catch (SQLException e) {
-            DatabaseManager.handleDatabaseError(e, plugin);
+        if (dataSource != null && !dataSource.isClosed()) {
+            dataSource.close();
         }
     }
 
     /**
-     * Returns the current database connection instance.
-     * @return The database connection.
+     * Retrieves a connection from the HikariCP connection pool.
+     * If there's an issue obtaining the connection, a runtime exception is thrown.
+     *
+     * @return A database connection.
      */
     public Connection getConnection() {
-        return connection;
+        try {
+            return dataSource.getConnection();
+        } catch (SQLException e) {
+            throw new RuntimeException(e.getMessage());
+        }
     }
 
     /**
