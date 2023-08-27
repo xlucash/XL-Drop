@@ -55,6 +55,10 @@ public class DatabaseConnectionManager {
                 config.setUsername(username);
                 config.setPassword(password);
                 config.setMaximumPoolSize(25);
+                config.setIdleTimeout(1800000); // 30 minutes
+                config.setMaxLifetime(1800000); // 30 minutes
+                config.setConnectionTimeout(30000); // 30 seconds
+                config.setValidationTimeout(5000); // 5 seconds
                 break;
             case "SQLite":
                 File dbFile = new File(plugin.getDataFolder(), "database.db");
