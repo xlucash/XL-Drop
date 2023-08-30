@@ -15,7 +15,6 @@ import java.sql.Statement;
  */
 public class DatabaseConnectionManager {
     private final DropMain plugin;
-    private Connection connection;
     private HikariDataSource dataSource;
     private String host, database, username, password, type;
     private int port;
@@ -75,6 +74,8 @@ public class DatabaseConnectionManager {
         }
 
         dataSource = new HikariDataSource(config);
+
+        createTablesIfNotExists();
     }
 
 
@@ -105,8 +106,8 @@ public class DatabaseConnectionManager {
     /**
      * Creates the necessary tables if they do not exist.
      */
-    private void createTableIfNotExists() {
-        try (Statement statement = connection.createStatement()) {
+    private void createTablesIfNotExists() {
+        try (Statement statement = getConnection().createStatement()) {
             statement.execute(
                     "CREATE TABLE IF NOT EXISTS player_drops (" +
                             "player_uuid VARCHAR(36) NOT NULL," +
