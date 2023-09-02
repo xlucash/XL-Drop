@@ -45,7 +45,7 @@ public class DatabaseConnectionManager {
      * For SQLite, it ensures the database file exists and sets up the JDBC URL.
      * The maximum pool size is also set based on the database type.
      */
-    private void setupPool() {
+    protected void setupPool() {
         HikariConfig config = new HikariConfig();
 
         switch (type) {
@@ -53,11 +53,17 @@ public class DatabaseConnectionManager {
                 config.setJdbcUrl("jdbc:mysql://" + host + ":" + port + "/" + database);
                 config.setUsername(username);
                 config.setPassword(password);
-                config.setMaximumPoolSize(25);
-                config.setIdleTimeout(1800000); // 30 minutes
-                config.setMaxLifetime(1800000); // 30 minutes
-                config.setConnectionTimeout(30000); // 30 seconds
-                config.setValidationTimeout(5000); // 5 seconds
+                config.setMaximumPoolSize(50);
+                config.setConnectionTimeout(60000);
+                config.setIdleTimeout(1740000);
+                config.setMaxLifetime(1740000);
+                config.addDataSourceProperty("cachePrepStmts", "true");
+                config.addDataSourceProperty("prepStmtCacheSize", "250");
+                config.addDataSourceProperty("prepStmtCacheSqlLimit", "2048");
+                config.addDataSourceProperty("useServerPrepStmts", "true");
+                config.addDataSourceProperty("tcpKeepAlive", "true");
+                config.addDataSourceProperty("autoReconnect", "true");
+                config.setConnectionTestQuery("SELECT 1");
                 break;
             case "SQLite":
                 File dbFile = new File(plugin.getDataFolder(), "database.db");
@@ -70,6 +76,7 @@ public class DatabaseConnectionManager {
                 }
                 config.setJdbcUrl("jdbc:sqlite:" + dbFile.getAbsolutePath());
                 config.setMaximumPoolSize(10);
+                config.setIdleTimeout(1800000);
                 break;
         }
 

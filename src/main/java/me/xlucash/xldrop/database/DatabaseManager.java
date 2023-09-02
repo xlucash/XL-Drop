@@ -4,6 +4,7 @@ import me.xlucash.xldrop.DropMain;
 import me.xlucash.xldrop.enums.Message;
 import org.bukkit.Location;
 
+import java.sql.Connection;
 import java.util.List;
 import java.util.UUID;
 
@@ -19,8 +20,8 @@ public class DatabaseManager {
     public DatabaseManager(DropMain plugin) {
         this.plugin = plugin;
         this.connectionManager = new DatabaseConnectionManager(plugin);
-        this.playerDropRepository = new PlayerDropRepository(connectionManager.getConnection(), plugin);
-        this.stoneGeneratorRepository = new StoneGeneratorRepository(connectionManager.getConnection(), plugin);
+        this.playerDropRepository = new PlayerDropRepository(connectionManager, plugin);
+        this.stoneGeneratorRepository = new StoneGeneratorRepository(connectionManager, plugin);
     }
 
     // Player Drop related methods
@@ -51,11 +52,15 @@ public class DatabaseManager {
 
     // Database connection related methods
     public void connect() {
-        connectionManager.getConnection();
+        connectionManager.setupPool();
     }
 
     public void disconnect() {
         connectionManager.disconnect();
+    }
+
+    public Connection getDatabaseConnection() {
+        return connectionManager.getConnection();
     }
 
     /**

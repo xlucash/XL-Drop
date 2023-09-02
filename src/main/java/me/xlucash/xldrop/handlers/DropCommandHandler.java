@@ -1,6 +1,7 @@
 package me.xlucash.xldrop.handlers;
 
 import me.xlucash.xldrop.DropMain;
+import me.xlucash.xldrop.database.DatabaseManager;
 import me.xlucash.xldrop.enums.Message;
 import me.xlucash.xldrop.guis.DropGui;
 import me.xlucash.xldrop.guis.items.DropItemProvider;
@@ -23,6 +24,7 @@ public class DropCommandHandler {
     private final DropGuiUpdater dropGuiUpdater;
     private final ConfigManager configManager;
     private final SuperiorSkyblockHook superiorSkyblockHook;
+    private DatabaseManager databaseManager;
 
     public DropCommandHandler(DropMain plugin) {
         this.plugin = plugin;
@@ -32,6 +34,7 @@ public class DropCommandHandler {
         this.superiorSkyblockHook = new SuperiorSkyblockHook(plugin, this.configManager);
         this.dropGuiUpdater = new DropGuiUpdater(plugin, this.configManager);
         this.itemFactory = new DropItemProvider(plugin, this.configManager, this.superiorSkyblockHook);
+        this.databaseManager = new DatabaseManager(plugin);
     }
 
     /**
@@ -40,6 +43,10 @@ public class DropCommandHandler {
      * @param args The arguments provided with the command.
      */
     public void handleCommand(Player player, String[] args) {
+        if (databaseManager.getDatabaseConnection() == null) {
+            databaseManager.connect();
+        }
+
         // Check if the "reload" subcommand is used.
         if (args.length > 0 && args[0].equalsIgnoreCase("reload")) {
             // Check if the player has the required permission.
