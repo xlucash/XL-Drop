@@ -10,6 +10,7 @@ import org.bukkit.entity.Player;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.inventory.meta.ItemMeta;
 
+import java.text.DecimalFormat;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -20,6 +21,8 @@ public class DropItemProvider {
     private final DropMain plugin;
     private final ConfigManager configManager;
     private final SuperiorSkyblockHook SuperiorSkyblockHook;
+
+    private static final DecimalFormat df = new DecimalFormat("0.00");
 
     public DropItemProvider(DropMain plugin, ConfigManager configManager, SuperiorSkyblockHook SuperiorSkyblockHook) {
         this.plugin = plugin;
@@ -45,7 +48,7 @@ public class DropItemProvider {
         ItemMeta meta = item.getItemMeta();
         meta.setDisplayName(ChatColor.WHITE + displayName);
         List<String> lore = new ArrayList<>();
-        lore.add(String.format(ChatColor.GRAY + Message.CHANCE_LORE.getText(), ChatColor.GOLD + String.valueOf(dropChance)));
+        lore.add(String.format(ChatColor.GRAY + Message.CHANCE_LORE.getText(), ChatColor.GOLD + df.format(dropChance)));
         lore.add(dropEnabled ? Message.DROP_ENABLED.getText() : Message.DROP_DISABLED.getText());
         meta.setLore(lore);
         item.setItemMeta(meta);
