@@ -10,3 +10,5 @@ permissions:
   drop.reload:
     description: Uprawnienie do przeładowania pluginu.
     default: op
+depend:
+  - SuperiorSkyblock2
